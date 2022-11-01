@@ -1,0 +1,57 @@
+---
+version: "3.4"
+
+services:
+  mysql-container:
+    image: mysql:latest
+    cap_add:
+      - SYS_NICE
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=iban-name-check
+      - MYSQL_ROOT_PASSWORD=mauFJcuf5dhRMQrjj
+    volumes:
+      - mysql-data-container:/var/lib/mysql
+      - ./mysql-data-container/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - iban-name-check-network
+
+  mongo-container:
+    image: mongo:latest
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    volumes:
+      - mongodb_data_container:/data/db
+    networks:
+      - iban-name-check-network
+
+  mongo-express:
+    image: mongo-express:latest
+    restart: always
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongo-container
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo-container
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_AUTH_DATABASE: admin
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: rootpassword
+    networks:
+      - iban-name-check-network
+
+volumes:
+  mysql-data-container:
+    driver: local
+  mongodb_data_container:
+    driver: local
+
+networks:
+  iban-name-check-network:

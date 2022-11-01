@@ -1,0 +1,17 @@
+server:
+  port: 7072
+
+spring:
+  servlet:
+    multipart:
+      enabled: false
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/iban-name-check-database?useSSL=false&createDatabaseIfNotExist=true
+    username: root
+    password: mauFJcuf5dhRMQrjj
