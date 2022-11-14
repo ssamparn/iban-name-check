@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pain.001.001.03" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <CstmrCdtTrfInitn>
+        <GrpHdr>
+            <MsgId>01-AccountType-01-CT</MsgId>
+            <CreDtTm>2013-07-18T10:00:00</CreDtTm>
+            <NbOfTxs>2</NbOfTxs>
+            <CtrlSum>0.03</CtrlSum>
+            <InitgPty>
+                <Nm>MIB</Nm>
+            </InitgPty>
+        </GrpHdr>
+        <PmtInf>
+            <PmtInfId>01-AccountType-01-CT-PaymentInf</PmtInfId>
+            <PmtMtd>TRF</PmtMtd>
+            <BtchBookg>false</BtchBookg>
+            <PmtTpInf>
+                <InstrPrty>NORM</InstrPrty>
+                <SvcLvl>
+                    <Cd>SEPA</Cd>
+                </SvcLvl>
+            </PmtTpInf>
+            <ReqdExctnDt>2021-12-31</ReqdExctnDt>
+        </PmtInf>
+        <PmtInf>
+            <PmtInfId>02-AccountType-02-CT-PaymentInf</PmtInfId>
+            <PmtMtd>TRF</PmtMtd>
+            <BtchBookg>false</BtchBookg>
+            <PmtTpInf>
+                <InstrPrty>NORM</InstrPrty>
+                <SvcLvl>
+                    <Cd>SEPA</Cd>
+                </SvcLvl>
+            </PmtTpInf>
+            <ReqdExctnDt>2021-12-31</ReqdExctnDt>
+        </PmtInf>
+    </CstmrCdtTrfInitn>
+</Document>

@@ -2,8 +2,8 @@ package com.sparkle.demo.ibannamecheckasyncimpl.web.controller;
 
 import com.sparkle.demo.ibannamecheckasyncimpl.service.FileMapper;
 import com.sparkle.demo.ibannamecheckasyncimpl.service.FilePartService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,20 +18,18 @@ import java.io.IOException;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1")
+@RequiredArgsConstructor
 public class IbanNameCheckAsyncController {
 
-    @Autowired
-    private FileMapper fileMapper;
-
-    @Autowired
-    private FilePartService filePartService;
+    private final FileMapper fileMapper;
+    private final FilePartService filePartService;
 
     @PostMapping(value = "/upload-pain-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Mono<String> uploadFile(@RequestPart("fileToUpload") Mono<FilePart> filePartMono,
-                                                        @RequestHeader("Content-Length") long contentLength) {
+                                   @RequestHeader("Content-Length") long contentLength) {
 
         return filePartMono
-                .doOnNext(fp -> System.out.println("Received File Size : " + contentLength + "bytes"))
+                .doOnNext(fp -> System.out.println("Received File Size : " + contentLength + " bytes"))
                 .doOnNext(fp -> System.out.println("Received File : " + fp.filename()))
                 .mapNotNull(fp -> {
                     try {

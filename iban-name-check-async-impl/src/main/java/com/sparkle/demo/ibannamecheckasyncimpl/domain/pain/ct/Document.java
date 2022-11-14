@@ -1,4 +1,4 @@
-package com.sparkle.demo.ibannamecheckasyncimpl.domain;
+package com.sparkle.demo.ibannamecheckasyncimpl.domain.pain.ct;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JacksonXmlRootElement
+@JacksonXmlRootElement(localName = "Document")
 public class Document {
-    @JsonProperty("CustomerCreditTransformationInfo")
-    private CustomerCreditTransformationInfo customerCreditTransformationInfo;
+
+    @JsonProperty("CstmrCdtTrfInitn")
+    private CustomerCreditTransferInitiation customerCreditTransferInitiation;
+
 }
