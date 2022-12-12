@@ -6,7 +6,7 @@ spring:
     multipart:
       enabled: false
   jpa:
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database-platform: org.hibernate.dialect.MySQLDialect #  check the dialect
     show-sql: true
     hibernate:
       ddl-auto: update

@@ -1,11 +1,13 @@
 package com.sparkle.demo.ibannamecheckblockingimpl.web.controller;
 
 import com.sparkle.demo.ibannamecheckblockingimpl.service.FileMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.RequestContext;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpStatus;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,15 +33,15 @@ public class IbanNameCheckRestController {
     @PostMapping(value = "/upload-pain-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> initiatePaymentInterchange(HttpServletRequest request) {
 
-        if (!ServletFileUpload.isMultipartContent(request)) {
-            throw new IllegalArgumentException("Not a multipart file upload");
-        }
+//        if (!ServletFileUpload.isMultipartContent((RequestContext) request)) {
+//            throw new IllegalArgumentException("Not a multipart file upload"); // fix this
+//        }
 
         ServletFileUpload upload = new ServletFileUpload();
 
         try {
-            FileItemIterator fileIterator = upload.getItemIterator(request);
-
+//            FileItemIterator fileIterator = upload.getItemIterator((RequestContext) request); fix this
+            FileItemIterator fileIterator = null;
             if (!fileIterator.hasNext()) {
                 throw new IllegalArgumentException("File upload request is incomplete");
             }

@@ -8,15 +8,19 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="iban-name-check-blocking-impl" />
+        <module name="iban-name-check-api" />
         <module name="iban-name-check-async-impl" />
+        <module name="iban-name-check-common" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="11" />
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="iban-name-check-api" options="-parameters" />
       <module name="iban-name-check-async-impl" options="-parameters" />
       <module name="iban-name-check-blocking-impl" options="-parameters" />
+      <module name="iban-name-check-common" options="-parameters" />
     </option>
   </component>
 </project>

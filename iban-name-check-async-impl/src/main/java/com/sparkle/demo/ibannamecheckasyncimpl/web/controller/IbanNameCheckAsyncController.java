@@ -1,7 +1,6 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.web.controller;
 
-import com.sparkle.demo.ibannamecheckasyncimpl.service.FileMapper;
-import com.sparkle.demo.ibannamecheckasyncimpl.service.FilePartService;
+import com.sparkle.demo.ibannamecheckasyncimpl.service.filepart.FilePartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -21,7 +20,6 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class IbanNameCheckAsyncController {
 
-    private final FileMapper fileMapper;
     private final FilePartService filePartService;
 
     @PostMapping(value = "/upload-pain-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
