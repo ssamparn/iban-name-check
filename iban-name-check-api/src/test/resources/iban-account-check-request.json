@@ -1,0 +1,74 @@
+{
+  "bulkRequest": [
+    {
+      "accountId": {
+        "value": "NL86RABO6333227641",
+        "type": "IBAN"
+      },
+      "name": "Sally Snozcumber"
+    },
+    {
+      "accountId": {
+        "value": "NL06ABNA5558304928",
+        "type": "IBAN"
+      },
+      "name": "Roy Olsson"
+    },
+    {
+      "accountId": {
+        "value": "NL36INGB2682297498",
+        "type": "IBAN"
+      },
+      "name": "Barry Grey"
+    },
+    {
+      "accountId": {
+        "value": "NL10RABO9837080566",
+        "type": "IBAN"
+      },
+      "name": "Chloe Donaldson"
+    },
+    {
+      "accountId": {
+        "value": "NL89INGB6034837898",
+        "type": "IBAN"
+      },
+      "name": "Alison Blackman"
+    },
+    {
+      "accountId": {
+        "value": "NL57ABNA2454554658",
+        "type": "IBAN"
+      },
+      "name": "Gemma Parkes"
+    },
+    {
+      "accountId": {
+        "value": "NL86INGB4110487447",
+        "type": "IBAN"
+      },
+      "name": "Suzanne Blast"
+    },
+    {
+      "accountId": {
+        "value": "NL75ABNA9372718300",
+        "type": "IBAN"
+      },
+      "name": "Sally Lakeman"
+    },
+    {
+      "accountId": {
+        "value": "NL23RABO5299017782",
+        "type": "IBAN"
+      },
+      "name": "Hannah Connor"
+    },
+    {
+      "accountId": {
+        "value": "NL22ABNA5206019070",
+        "type": "IBAN"
+      },
+      "name": "Morwenna Zeus"
+    }
+  ]
+}

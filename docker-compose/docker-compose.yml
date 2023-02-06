@@ -6,7 +6,6 @@ services:
     image: mysql:latest
     cap_add:
       - SYS_NICE
-    restart: always
     ports:
       - "3306:3306"
     environment:
@@ -18,8 +17,8 @@ services:
     networks:
       - iban-name-check-network
 
-  mongo-container:
-    image: mongo:latest
+  mongodb:
+    image: mongo:6.0.2
     restart: always
     ports:
       - "27017:27017"
@@ -32,14 +31,14 @@ services:
       - iban-name-check-network
 
   mongo-express:
-    image: mongo-express:latest
+    image: mongo-express:0.54
     restart: always
     ports:
       - "8081:8081"
     depends_on:
-      - mongo-container
+      - mongodb
     environment:
-      ME_CONFIG_MONGODB_SERVER: mongo-container
+      ME_CONFIG_MONGODB_SERVER: mongodb
       ME_CONFIG_MONGODB_PORT: 27017
       ME_CONFIG_MONGODB_AUTH_DATABASE: admin
       ME_CONFIG_MONGODB_ADMINUSERNAME: root

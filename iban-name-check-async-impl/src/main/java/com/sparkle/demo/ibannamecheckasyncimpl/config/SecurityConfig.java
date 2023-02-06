@@ -18,8 +18,6 @@ public class SecurityConfig {
                 .permitAll()
             )
             .csrf().disable();
-
         return http.build();
     }
-
 }

@@ -1,6 +1,9 @@
 server:
   port: 7071
 
+service.url:
+  sure-pay: http://localhost:7070/v2/account
+
 spring:
   servlet:
     multipart:
@@ -10,11 +13,11 @@ spring:
       #      commented for embedded mongo
       #      host: localhost
       #      port: 27017
-      database: iban-name-check-nosql-database
+      database: iban-name-check-database
       username: root
       password: rootpassword
       authentication-database: admin
-      uri: mongodb://root:rootpassword@localhost:27017/iban-name-check-nosql-database?authSource=admin&authMechanism=SCRAM-SHA-1
+      uri: mongodb://root:rootpassword@localhost:27017/iban-name-check-database?authSource=admin&authMechanism=SCRAM-SHA-1
   mongodb:
     embedded:
       version: 5.0.6

@@ -9,7 +9,7 @@
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
-    <name>iban-name-check</name>
+    <name>Iban Name Check Parent</name>
 
     <properties>
         <java.version>17</java.version>

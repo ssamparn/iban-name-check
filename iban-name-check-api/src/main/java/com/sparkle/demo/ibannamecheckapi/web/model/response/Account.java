@@ -12,6 +12,4 @@ public class Account {
     private String iban;
     private Status status;
     private AccountHolderType accountHolderType;
-    private String municipality;
-    private SwitchingInformation switchingInformation;
 }

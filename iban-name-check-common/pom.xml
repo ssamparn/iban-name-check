@@ -11,12 +11,12 @@
 	<groupId>com.sparkle.demo</groupId>
 	<artifactId>iban-name-check-common</artifactId>
 	<version>1.0.0</version>
-	<name>iban-name-check-common</name>
+	<name>Iban Name Check Common</name>
 
 	<description>Common module of IBAN Name Check</description>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 	</properties>
 
 	<dependencies>

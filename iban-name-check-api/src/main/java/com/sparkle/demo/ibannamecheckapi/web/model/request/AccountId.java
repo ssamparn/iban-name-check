@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 public class AccountId {
 
     @JsonProperty("value")
-    private String accountCheckIdentifier;
+    private String accountIdentifier;
 
     @JsonProperty("type")
     private AccountType accountType;

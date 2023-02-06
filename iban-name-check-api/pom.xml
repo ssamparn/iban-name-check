@@ -12,12 +12,12 @@
 	<groupId>com.sparkle.demo</groupId>
 	<artifactId>iban-name-check-api</artifactId>
 	<version>1.0.0</version>
-	<name>iban-name-check-api</name>
+	<name>Iban Name Check Sample Api</name>
 
 	<description>API for IBAN Name Check</description>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 	</properties>
 
 	<dependencies>

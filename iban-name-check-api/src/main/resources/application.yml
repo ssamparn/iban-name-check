@@ -1,15 +1,19 @@
+server:
+  port: 7070
+
 spring:
   data:
     mongodb:
       #      commented for embedded mongo
       #      host: localhost
       #      port: 27017
-      database: iban-name-check-api-nosql-database
+      database: iban-name-check-database
       username: root
       password: rootpassword
       authentication-database: admin
-      uri: mongodb://root:rootpassword@localhost:27017/iban-name-check-api-nosql-database?authSource=admin&authMechanism=SCRAM-SHA-1
+      uri: mongodb://root:rootpassword@localhost:27017/iban-name-check-database?authSource=admin&authMechanism=SCRAM-SHA-1
       auto-index-creation: true
   mongodb:
     embedded:
       version: 5.0.6
+

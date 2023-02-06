@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 public class IbanAccountCheckRequest {
 
-    private AccountId accountId;
-
-    @JsonProperty("name")
-    private String accountHolderName;
+    @JsonProperty("bulkRequest")
+    private List<BulkRequest> batchRequest;
 }
