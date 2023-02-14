@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.io.InputStream;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/v1")
@@ -27,16 +29,24 @@ public class IbanNameCheckAsyncController {
     private final ExcelFileService excelFileService;
 
     @PostMapping(value = "/upload-pain-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<ResponseEntity<Resource>> uploadFile(@RequestPart("fileToUpload") Mono<FilePart> filePartMono,
+    public Mono<ResponseEntity<Resource>> uploadPainFile(@RequestPart("fileToUpload") Mono<FilePart> filePartMono,
                                      @RequestHeader("Content-Length") long contentLength) {
         return this.painFileService.uploadFile(filePartMono)
                 .map(InputStreamResource::new)
                 .map(ResponseEntity::ok);
     }
 
-    @PostMapping(value = "/upload-excel-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Flux<String> uploadFile(@RequestPart("fileToUpload") Flux<FilePart> filePartFlux) {
-        return excelFileService.uploadFile(filePartFlux);
+    @PostMapping(value = "/upload-excel-file-flux", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Flux<String> uploadExcelFileFlux(@RequestPart("fileToUpload") Flux<FilePart> filePartFlux) {
+        return excelFileService.uploadExcelFileAsFlux(filePartFlux);
     }
+
+    @PostMapping(value = "/upload-excel-file-mono", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Mono<ResponseEntity<InputStream>> uploadExcelFileMono(@RequestPart("fileToUpload") Mono<FilePart> filePartMono) {
+        return excelFileService.uploadExcelFileAsMono(filePartMono)
+                .map(ResponseEntity::ok);
+    }
+
+
 
 }
