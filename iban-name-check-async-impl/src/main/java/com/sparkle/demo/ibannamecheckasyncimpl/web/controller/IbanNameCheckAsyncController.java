@@ -2,6 +2,7 @@ package com.sparkle.demo.ibannamecheckasyncimpl.web.controller;
 
 import com.sparkle.demo.ibannamecheckasyncimpl.service.handler.excel.ExcelFileService;
 import com.sparkle.demo.ibannamecheckasyncimpl.service.handler.pain.PainFileService;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.IbanNameModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.io.InputStream;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -36,17 +37,14 @@ public class IbanNameCheckAsyncController {
                 .map(ResponseEntity::ok);
     }
 
-    @PostMapping(value = "/upload-excel-file-flux", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Flux<String> uploadExcelFileFlux(@RequestPart("fileToUpload") Flux<FilePart> filePartFlux) {
+    @PostMapping(value = "/upload-excel-file-flux", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Flux<List<IbanNameModel>> uploadExcelFileFlux(@RequestPart("fileToUpload") Flux<FilePart> filePartFlux) {
         return excelFileService.uploadExcelFileAsFlux(filePartFlux);
     }
 
-    @PostMapping(value = "/upload-excel-file-mono", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<ResponseEntity<InputStream>> uploadExcelFileMono(@RequestPart("fileToUpload") Mono<FilePart> filePartMono) {
+    @PostMapping(value = "/upload-excel-file-mono", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity<List<IbanNameModel>>> uploadExcelFileMono(@RequestPart("fileToUpload") Mono<FilePart> filePartMono) {
         return excelFileService.uploadExcelFileAsMono(filePartMono)
                 .map(ResponseEntity::ok);
     }
-
-
-
 }

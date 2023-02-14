@@ -1,4 +1,4 @@
-package com.sparkle.demo.ibannamecheckasyncimpl.web.model;
+package com.sparkle.demo.ibannamecheckasyncimpl.web.model.response;
 
 import lombok.Data;
 

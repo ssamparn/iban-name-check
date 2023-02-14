@@ -1,7 +1,7 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.web.service;
 
 import com.sparkle.demo.ibannamecheckasyncimpl.utils.ByteArrayInOutStream;
-import com.sparkle.demo.ibannamecheckasyncimpl.web.model.IbanNameCheckData;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.IbanNameCheckData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
