@@ -100,8 +100,8 @@ public class FileMapper {
                 IbanNameModel ibanNameModel = new IbanNameModel();
                 XSSFRow row = worksheet.getRow(i);
 
-                ibanNameModel.setAccount(row.getCell(0).getStringCellValue());
-                ibanNameModel.setName(row.getCell(1).getStringCellValue());
+                ibanNameModel.setAccount(row.getCell(0).getStringCellValue().trim());
+                ibanNameModel.setName(row.getCell(1).getStringCellValue().trim());
                 ibanNameModelList.add(ibanNameModel);
             }
             workbook.close();

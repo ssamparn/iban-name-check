@@ -19,14 +19,14 @@ public class ExcelFileService {
 
     private final FileMapper fileMapper;
 
-    public Mono<List<IbanNameModel>> uploadExcelFileAsMono(Mono<FilePart> filePartMono) {
+    public Mono<List<IbanNameModel>> processExcelFileAsMono(Mono<FilePart> filePartMono) {
         return filePartMono
                 .map(fileMapper::getFilePartRequestAsInputStream)
                 .map(fileMapper::excelToIbanNameModel)
                 .subscribeOn(Schedulers.boundedElastic());
     }
 
-    public Flux<List<IbanNameModel>> uploadExcelFileAsFlux(Flux<FilePart> filePartFlux) {
+    public Flux<List<IbanNameModel>> processExcelFileAsFlux(Flux<FilePart> filePartFlux) {
         return filePartFlux
                 .map(fileMapper::getFilePartRequestAsInputStream)
                 .map(fileMapper::excelToIbanNameModel)

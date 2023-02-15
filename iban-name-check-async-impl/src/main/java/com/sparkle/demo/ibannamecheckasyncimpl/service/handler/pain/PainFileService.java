@@ -32,7 +32,7 @@ public class PainFileService {
     private final IbanNameCheckClient ibanNameCheckClient;
     private final CsvWriterService csvWriterService;
 
-    public Mono<ByteArrayInputStream> uploadFile(Mono<FilePart> filePart) {
+    public Mono<ByteArrayInputStream> processPainFile(Mono<FilePart> filePart) {
         return filePart
                 .map(fileMapper::getFilePartRequestAsInputStream)
                 .map(inputStream -> (PipedInputStream) inputStream) // Refactor this line

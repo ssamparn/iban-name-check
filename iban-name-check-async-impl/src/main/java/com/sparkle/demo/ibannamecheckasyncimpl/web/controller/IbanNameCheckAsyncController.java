@@ -1,7 +1,6 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.web.controller;
 
-import com.sparkle.demo.ibannamecheckasyncimpl.service.handler.excel.ExcelFileService;
-import com.sparkle.demo.ibannamecheckasyncimpl.service.handler.pain.PainFileService;
+import com.sparkle.demo.ibannamecheckasyncimpl.business.IbanNameCheckBusinessImpl;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.IbanNameModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,25 +25,24 @@ import java.util.List;
 @RequiredArgsConstructor
 public class IbanNameCheckAsyncController {
 
-    private final PainFileService painFileService;
-    private final ExcelFileService excelFileService;
+    private final IbanNameCheckBusinessImpl ibanNameCheckBusiness;
 
     @PostMapping(value = "/upload-pain-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Mono<ResponseEntity<Resource>> uploadPainFile(@RequestPart("fileToUpload") Mono<FilePart> filePartMono,
                                      @RequestHeader("Content-Length") long contentLength) {
-        return this.painFileService.uploadFile(filePartMono)
+        return this.ibanNameCheckBusiness.uploadPainFile(filePartMono)
                 .map(InputStreamResource::new)
                 .map(ResponseEntity::ok);
     }
 
     @PostMapping(value = "/upload-excel-file-flux", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Flux<List<IbanNameModel>> uploadExcelFileFlux(@RequestPart("fileToUpload") Flux<FilePart> filePartFlux) {
-        return excelFileService.uploadExcelFileAsFlux(filePartFlux);
+        return this.ibanNameCheckBusiness.uploadExcelFileAsFlux(filePartFlux);
     }
 
     @PostMapping(value = "/upload-excel-file-mono", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<List<IbanNameModel>>> uploadExcelFileMono(@RequestPart("fileToUpload") Mono<FilePart> filePartMono) {
-        return excelFileService.uploadExcelFileAsMono(filePartMono)
+        return this.ibanNameCheckBusiness.uploadExcelFileAsMono(filePartMono)
                 .map(ResponseEntity::ok);
     }
 }
