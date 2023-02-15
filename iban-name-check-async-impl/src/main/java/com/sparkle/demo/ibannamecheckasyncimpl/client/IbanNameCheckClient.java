@@ -20,7 +20,7 @@ public class IbanNameCheckClient {
         this.surePayClient = surePayClient;
     }
 
-    public Mono<IbanNameCheckResponse> doPost(IbanNameCheckRequest request) {
+    public Mono<IbanNameCheckResponse> postJsonPayload(IbanNameCheckRequest request) {
         Mono<IbanNameCheckResponse> ibanNameCheckResponseMono = this.surePayClient
                 .post()
                 .uri("/check/banks")
@@ -31,5 +31,9 @@ public class IbanNameCheckClient {
                 .bodyToMono(IbanNameCheckResponse.class);
 
         return ibanNameCheckResponseMono;
+    }
+
+    public void postFilePayload() {
+
     }
 }

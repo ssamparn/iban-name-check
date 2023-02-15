@@ -39,7 +39,7 @@ public class PainFileService {
                 .flatMap(fileMapper::readContentFromPipedInputStream)// Refactor this line
                 .flatMap(fileMapper::mapToRootDocument)
                 .map(this::mapToSurePayRequest)
-                .flatMap(ibanNameCheckClient::doPost)
+                .flatMap(ibanNameCheckClient::postJsonPayload)
                 .map(this::mapToIbanNameCheckData)
                 .flatMap(csvWriterService::generateCsv)
                 .subscribeOn(Schedulers.boundedElastic());
