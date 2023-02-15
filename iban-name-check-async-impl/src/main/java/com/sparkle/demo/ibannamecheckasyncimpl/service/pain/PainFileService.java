@@ -1,4 +1,4 @@
-package com.sparkle.demo.ibannamecheckasyncimpl.service.handler.pain;
+package com.sparkle.demo.ibannamecheckasyncimpl.service.pain;
 
 import com.sparkle.demo.ibannamecheckasyncimpl.client.IbanNameCheckClient;
 import com.sparkle.demo.ibannamecheckcommon.model.ct.request.Document;
