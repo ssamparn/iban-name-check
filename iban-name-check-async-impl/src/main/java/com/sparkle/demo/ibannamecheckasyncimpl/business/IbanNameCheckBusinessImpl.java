@@ -27,7 +27,7 @@ public class IbanNameCheckBusinessImpl {
         return excelFileService.processExcelFileAsFlux(filePartFlux);
     }
 
-    public Mono<List<IbanNameModel>> uploadExcelFileAsMono(Mono<FilePart> filePartMono) {
+    public Mono<ByteArrayInputStream> uploadExcelFileAsMono(Mono<FilePart> filePartMono) {
         return excelFileService.processExcelFileAsMono(filePartMono);
     }
 }

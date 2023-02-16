@@ -1,4 +1,4 @@
-package com.sparkle.demo.ibannamecheckasyncimpl.service.mapper;
+package com.sparkle.demo.ibannamecheckasyncimpl.mapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;

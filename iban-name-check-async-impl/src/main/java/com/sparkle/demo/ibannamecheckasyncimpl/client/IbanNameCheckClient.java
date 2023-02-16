@@ -4,8 +4,11 @@ import com.sparkle.demo.ibannamecheckcommon.model.surepay.request.IbanNameCheckR
 import com.sparkle.demo.ibannamecheckcommon.model.surepay.response.IbanNameCheckResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -33,7 +36,14 @@ public class IbanNameCheckClient {
         return ibanNameCheckResponseMono;
     }
 
-    public void postFilePayload() {
+    public Mono<IbanNameCheckResponse> postFilePayload(InputStreamResource inputStreamResource) {
+        return this.surePayClient
+                .post()
+                .uri("/check/banks")
+                .contentType(new MediaType("text", "csv"))
+                .body(BodyInserters.fromResource(inputStreamResource))
+                .retrieve()
+                .bodyToMono(IbanNameCheckResponse.class);
 
     }
 }

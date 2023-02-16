@@ -8,7 +8,7 @@ import com.sparkle.demo.ibannamecheckcommon.model.surepay.request.BulkRequest;
 import com.sparkle.demo.ibannamecheckcommon.model.surepay.request.IbanNameCheckRequest;
 import com.sparkle.demo.ibannamecheckcommon.model.surepay.response.ResultType;
 import com.sparkle.demo.ibannamecheckcommon.model.surepay.response.IbanNameCheckResponse;
-import com.sparkle.demo.ibannamecheckasyncimpl.service.mapper.FileMapper;
+import com.sparkle.demo.ibannamecheckasyncimpl.mapper.FileMapper;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.IbanNameCheckData;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.service.CsvWriterService;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +41,7 @@ public class PainFileService {
                 .map(this::mapToSurePayRequest)
                 .flatMap(ibanNameCheckClient::postJsonPayload)
                 .map(this::mapToIbanNameCheckData)
-                .flatMap(csvWriterService::generateCsv)
+                .flatMap(csvWriterService::generateCsvResponse)
                 .subscribeOn(Schedulers.boundedElastic());
     }
 
