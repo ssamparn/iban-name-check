@@ -54,6 +54,8 @@ public class IbanNameService {
                 .map(ibanNameResponseFactory::toDocumentFromJson)
                 .flatMap(ibanNameDocument -> ibanNameRepository.findByAccountNumber(ibanNameDocument.getAccountNumber()))
                 .collectList()
+                .map(ibanNameResponseFactory::toModel)
+                .map(IbanAccountCheckResponse::getBatchResponse)
                 .flatMap(csvReadWriteService::generateCsvResponse)
                 .subscribeOn(Schedulers.boundedElastic());
     }

@@ -1,6 +1,7 @@
 package com.sparkle.demo.ibannamecheckapi.service;
 
 import com.sparkle.demo.ibannamecheckapi.document.IbanNameDocument;
+import com.sparkle.demo.ibannamecheckapi.web.model.response.BulkResponse;
 import com.sparkle.demo.ibannamecheckcommon.model.utils.ByteArrayInOutStream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
@@ -22,7 +23,7 @@ public class CsvReadWriteService {
         ACCOUNT, STATUS, ISMATCHED
     }
 
-    public Mono<ByteArrayInputStream> generateCsvResponse(List<IbanNameDocument> ibanNameDocumentList) {
+    public Mono<ByteArrayInputStream> generateCsvResponse(List<BulkResponse> bulkResponses) {
         final CSVFormat format = CSVFormat.RFC4180.withHeader(ResponseCsvHeaders.class);
         return Mono.fromCallable(() -> {
             try {
@@ -30,7 +31,7 @@ public class CsvReadWriteService {
                 OutputStreamWriter streamWriter = new OutputStreamWriter(stream);
                 CSVPrinter csvPrinter = new CSVPrinter(streamWriter, format);
 
-                csvPrinter.printRecords(ibanNameDocumentList);
+                csvPrinter.printRecords(bulkResponses);
                 csvPrinter.flush();
                 return new ByteArrayInputStream(stream.toByteArray());
             } catch (IOException e) {
