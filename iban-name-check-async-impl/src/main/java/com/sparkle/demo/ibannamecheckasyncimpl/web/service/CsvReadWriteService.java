@@ -1,6 +1,6 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.web.service;
 
-import com.sparkle.demo.ibannamecheckasyncimpl.utils.ByteArrayInOutStream;
+import com.sparkle.demo.ibannamecheckcommon.model.utils.ByteArrayInOutStream;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.IbanNameModel;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.IbanNameCheckData;
 import lombok.extern.slf4j.Slf4j;
@@ -17,21 +17,25 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class CsvWriterService {
+public class CsvReadWriteService {
 
-    enum CsvHeaders {
+    enum RequestCsvHeaders {
         ACCOUNT, STATUS, ISMATCHED
     }
 
-    public Mono<ByteArrayInputStream> generateCsvResponse(List<IbanNameCheckData> ibanNameCheckDataList) {
-        final CSVFormat format = CSVFormat.RFC4180.withHeader(CsvHeaders.class);
+    enum ResponseCsvHeaders {
+        ACCOUNT, STATUS, ISMATCHED
+    }
+
+    public Mono<ByteArrayInputStream> createCsvRequest(List<IbanNameModel> ibanNameModels) {
+        final CSVFormat format = CSVFormat.RFC4180.withHeader(RequestCsvHeaders.class);
         return Mono.fromCallable(() -> {
             try {
                 ByteArrayInOutStream stream = new ByteArrayInOutStream();
                 OutputStreamWriter streamWriter = new OutputStreamWriter(stream);
                 CSVPrinter csvPrinter = new CSVPrinter(streamWriter, format);
 
-                csvPrinter.printRecords(ibanNameCheckDataList);
+                csvPrinter.printRecords(ibanNameModels);
                 csvPrinter.flush();
                 return new ByteArrayInputStream(stream.toByteArray());
             } catch (IOException e) {
@@ -40,15 +44,15 @@ public class CsvWriterService {
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
-    public Mono<ByteArrayInputStream> createCsvRequest(List<IbanNameModel> ibanNameModels) {
-        final CSVFormat format = CSVFormat.RFC4180.withHeader(CsvHeaders.class);
+    public Mono<ByteArrayInputStream> generateCsvResponse(List<IbanNameCheckData> ibanNameCheckDataList) {
+        final CSVFormat format = CSVFormat.RFC4180.withHeader(ResponseCsvHeaders.class);
         return Mono.fromCallable(() -> {
             try {
                 ByteArrayInOutStream stream = new ByteArrayInOutStream();
                 OutputStreamWriter streamWriter = new OutputStreamWriter(stream);
                 CSVPrinter csvPrinter = new CSVPrinter(streamWriter, format);
 
-                csvPrinter.printRecords(ibanNameModels);
+                csvPrinter.printRecords(ibanNameCheckDataList);
                 csvPrinter.flush();
                 return new ByteArrayInputStream(stream.toByteArray());
             } catch (IOException e) {

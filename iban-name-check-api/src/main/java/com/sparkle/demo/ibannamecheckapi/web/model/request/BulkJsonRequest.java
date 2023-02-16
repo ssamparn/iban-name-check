@@ -1,12 +1,14 @@
 package com.sparkle.demo.ibannamecheckapi.web.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class BulkRequest {
+@AllArgsConstructor(staticName = "create")
+public class BulkJsonRequest {
 
     @JsonProperty("accountId")
     private AccountId accountId;

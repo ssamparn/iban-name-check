@@ -1,13 +1,6 @@
-package com.sparkle.demo.ibannamecheckasyncimpl.mapper;
+package com.sparkle.demo.ibannamecheckapi.mapper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.IbanNameModel;
-import com.sparkle.demo.ibannamecheckcommon.model.ct.request.Document;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.codec.multipart.FilePart;
@@ -19,26 +12,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Service
 public class FileMapper {
-
-    public Mono<Document> mapToRootDocument(String xmlDocument) {
-        XmlMapper xmlMapper = new XmlMapper();
-        Document document = null;
-        try {
-            document = xmlMapper.readValue(xmlDocument, Document.class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        log.info("root document mapped: {}", document);
-
-        return Mono.just(document);
-    }
 
     public InputStream getFilePartRequestAsInputStream(FilePart filePart) {
         PipedOutputStream pipedOutputStream = new PipedOutputStream();
@@ -89,25 +66,5 @@ public class FileMapper {
         log.info(String.format("read %d bytes from the stream\n", byteCount));
         contentStringBuffer.append(new String(tmp));
         return String.valueOf(contentStringBuffer);
-    }
-
-    public List<IbanNameModel> excelToIbanNameModel(InputStream inputStream) {
-        List<IbanNameModel> ibanNameModelList = new ArrayList<>();
-        try {
-            XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
-            XSSFSheet worksheet = workbook.getSheetAt(0);
-            for(int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
-                IbanNameModel ibanNameModel = new IbanNameModel();
-                XSSFRow row = worksheet.getRow(i);
-
-                ibanNameModel.setCounterPartyAccount(row.getCell(0).getStringCellValue().trim());
-                ibanNameModel.setCounterPartyName(row.getCell(1).getStringCellValue().trim());
-                ibanNameModelList.add(ibanNameModel);
-            }
-            workbook.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return ibanNameModelList;
     }
 }

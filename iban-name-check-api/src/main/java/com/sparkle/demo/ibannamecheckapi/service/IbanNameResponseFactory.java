@@ -1,7 +1,7 @@
 package com.sparkle.demo.ibannamecheckapi.service;
 
 import com.sparkle.demo.ibannamecheckapi.document.IbanNameDocument;
-import com.sparkle.demo.ibannamecheckapi.web.model.request.BulkRequest;
+import com.sparkle.demo.ibannamecheckapi.web.model.request.BulkJsonRequest;
 import com.sparkle.demo.ibannamecheckapi.web.model.response.Account;
 import com.sparkle.demo.ibannamecheckapi.web.model.response.AccountHolderType;
 import com.sparkle.demo.ibannamecheckapi.web.model.response.BulkResponse;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Service
 public class IbanNameResponseFactory {
 
-    public IbanNameDocument toDocument(final BulkRequest request) {
+    public IbanNameDocument toDocumentFromJson(final BulkJsonRequest request) {
         return IbanNameDocument.create(
             null,
             request.getAccountId().getAccountIdentifier(),

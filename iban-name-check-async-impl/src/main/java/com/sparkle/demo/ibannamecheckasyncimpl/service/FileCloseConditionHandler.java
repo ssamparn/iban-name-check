@@ -1,4 +1,4 @@
-package com.sparkle.demo.ibannamecheckasyncimpl.service.handler;
+package com.sparkle.demo.ibannamecheckasyncimpl.service;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;

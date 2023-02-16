@@ -1,4 +1,4 @@
-package com.sparkle.demo.ibannamecheckasyncimpl.utils;
+package com.sparkle.demo.ibannamecheckcommon.model.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

@@ -1,6 +1,6 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.service.pain;
 
-import com.sparkle.demo.ibannamecheckasyncimpl.client.IbanNameCheckClient;
+import com.sparkle.demo.ibannamecheckasyncimpl.client.IbanNameCheckJsonClient;
 import com.sparkle.demo.ibannamecheckcommon.model.ct.request.Document;
 import com.sparkle.demo.ibannamecheckcommon.model.ct.request.PaymentInformation;
 import com.sparkle.demo.ibannamecheckcommon.model.surepay.request.AccountId;
@@ -10,7 +10,7 @@ import com.sparkle.demo.ibannamecheckcommon.model.surepay.response.ResultType;
 import com.sparkle.demo.ibannamecheckcommon.model.surepay.response.IbanNameCheckResponse;
 import com.sparkle.demo.ibannamecheckasyncimpl.mapper.FileMapper;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.IbanNameCheckData;
-import com.sparkle.demo.ibannamecheckasyncimpl.web.service.CsvWriterService;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.service.CsvReadWriteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.codec.multipart.FilePart;
@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
 public class PainFileService {
 
     private final FileMapper fileMapper;
-    private final IbanNameCheckClient ibanNameCheckClient;
-    private final CsvWriterService csvWriterService;
+    private final IbanNameCheckJsonClient ibanNameCheckClient;
+    private final CsvReadWriteService csvReadWriteService;
 
     public Mono<ByteArrayInputStream> processPainFile(Mono<FilePart> filePart) {
         return filePart
@@ -39,9 +39,9 @@ public class PainFileService {
                 .flatMap(fileMapper::readContentFromPipedInputStream)// Refactor this line
                 .flatMap(fileMapper::mapToRootDocument)
                 .map(this::mapToSurePayRequest)
-                .flatMap(ibanNameCheckClient::postJsonPayload)
+                .flatMap(ibanNameCheckClient::doPost)
                 .map(this::mapToIbanNameCheckData)
-                .flatMap(csvWriterService::generateCsvResponse)
+                .flatMap(csvReadWriteService::generateCsvResponse)
                 .subscribeOn(Schedulers.boundedElastic());
     }
 

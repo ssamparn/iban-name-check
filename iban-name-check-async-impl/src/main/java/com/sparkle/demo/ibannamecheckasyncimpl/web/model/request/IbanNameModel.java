@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class IbanNameModel {
-    private String account;
-    private String name;
+    private String counterPartyAccount;
+    private String counterPartyName;
 }

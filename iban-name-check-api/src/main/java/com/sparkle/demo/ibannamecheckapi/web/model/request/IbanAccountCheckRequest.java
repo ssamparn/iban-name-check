@@ -11,5 +11,5 @@ import java.util.List;
 public class IbanAccountCheckRequest {
 
     @JsonProperty("bulkRequest")
-    private List<BulkRequest> batchRequest;
+    private List<BulkJsonRequest> batchRequest;
 }

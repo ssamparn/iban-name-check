@@ -1,10 +1,10 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.service.excel;
 
-import com.sparkle.demo.ibannamecheckasyncimpl.client.IbanNameCheckClient;
+import com.sparkle.demo.ibannamecheckasyncimpl.client.IbanNameCheckCsvClient;
 import com.sparkle.demo.ibannamecheckasyncimpl.mapper.FileMapper;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.IbanNameModel;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.IbanNameCheckData;
-import com.sparkle.demo.ibannamecheckasyncimpl.web.service.CsvWriterService;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.service.CsvReadWriteService;
 import com.sparkle.demo.ibannamecheckcommon.model.surepay.response.IbanNameCheckResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,18 +25,18 @@ import java.util.List;
 public class ExcelFileService {
 
     private final FileMapper fileMapper;
-    private final IbanNameCheckClient ibanNameCheckClient;
-    private final CsvWriterService csvWriterService;
+    private final IbanNameCheckCsvClient ibanNameCheckClient;
+    private final CsvReadWriteService csvReadWriteService;
 
     public Mono<ByteArrayInputStream> processExcelFileAsMono(Mono<FilePart> filePartMono) {
         return filePartMono
                 .map(fileMapper::getFilePartRequestAsInputStream)
                 .map(fileMapper::excelToIbanNameModel)
-                .flatMap(csvWriterService::createCsvRequest)
+                .flatMap(csvReadWriteService::createCsvRequest)
                 .map(InputStreamResource::new)
-                .flatMap(ibanNameCheckClient::postFilePayload)
+                .flatMap(ibanNameCheckClient::doPost)
                 .map(this::toIbanNameCheckData)
-                .flatMap(csvWriterService::generateCsvResponse)
+                .flatMap(csvReadWriteService::generateCsvResponse)
                 .subscribeOn(Schedulers.boundedElastic());
     }
 
