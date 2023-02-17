@@ -27,8 +27,8 @@ public class IbanNameCheckJsonClient {
                 .uri("/check/banks/json")
                 .bodyValue(request)
                 .retrieve()
-                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new RuntimeException("Server Error")))
                 .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.error(new RuntimeException("Client Error")))
+                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new RuntimeException("Server Error")))
                 .bodyToMono(IbanNameCheckResponse.class);
     }
 }
