@@ -51,7 +51,7 @@ public class PainFileService {
             .map(bulkResponse -> {
                 IbanNameCheckData ibanNameCheckData = new IbanNameCheckData();
                 ibanNameCheckData.setCounterPartyAccountNumber(bulkResponse.getResult().getAccountResult().getIban());
-                ibanNameCheckData.setCounterPartyAccountName(bulkResponse.getResult().getAccountResult().getAccountHolderType());
+                ibanNameCheckData.setCounterPartyAccountName("CounterParty Account Name");
 
                 ibanNameCheckData.setFinalResult(FinalResult.valueOf(bulkResponse.getResult().getResultType().name()));
                 ibanNameCheckData.setInfo("small info");

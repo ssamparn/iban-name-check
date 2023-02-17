@@ -64,18 +64,35 @@ public class ExcelWriteService {
                 int rowNum = 2;
                 for (IbanNameCheckData nameCheckData : ibanNames) {
                     log.info("Writing data to excel");
-                    Row empDataRow = sheet.createRow(rowNum++);
-                    Cell empIdCell = empDataRow.createCell(0);
-                    empIdCell.setCellStyle(cellStyle);
-                    empIdCell.setCellValue(nameCheckData.getCounterPartyAccountNumber());
+                    Row ibanNameRow = sheet.createRow(rowNum++);
+                    Cell counterPartyAccountNumCell = ibanNameRow.createCell(0);
+                    counterPartyAccountNumCell.setCellStyle(cellStyle);
+                    counterPartyAccountNumCell.setCellValue(nameCheckData.getCounterPartyAccountNumber());
 
-                    Cell empNameCell = empDataRow.createCell(1);
-                    empNameCell.setCellStyle(cellStyle);
-                    empNameCell.setCellValue(nameCheckData.getCounterPartyAccountName());
+                    Cell counterPartyNameCell = ibanNameRow.createCell(1);
+                    counterPartyNameCell.setCellStyle(cellStyle);
+                    counterPartyNameCell.setCellValue(nameCheckData.getCounterPartyAccountName());
 
-                    Cell empRoleCell = empDataRow.createCell(2);
-                    empRoleCell.setCellStyle(cellStyle);
-                    empRoleCell.setCellValue(nameCheckData.getStatus().name());
+                    Cell resultTypeCell = ibanNameRow.createCell(3);
+                    resultTypeCell.setCellStyle(cellStyle);
+                    resultTypeCell.setCellValue(nameCheckData.getStatus().name());
+
+                    Cell infoCell = ibanNameRow.createCell(4);
+                    infoCell.setCellStyle(cellStyle);
+                    infoCell.setCellValue(nameCheckData.getInfo());
+
+                    Cell suggestedNameCell = ibanNameRow.createCell(5);
+                    suggestedNameCell.setCellStyle(cellStyle);
+                    suggestedNameCell.setCellValue(nameCheckData.getSuggestedName());
+
+                    Cell statusCell = ibanNameRow.createCell(6);
+                    statusCell.setCellStyle(cellStyle);
+                    statusCell.setCellValue(nameCheckData.getStatus().name());
+
+                    Cell accountHolderTypeCell = ibanNameRow.createCell(7);
+                    accountHolderTypeCell.setCellStyle(cellStyle);
+                    accountHolderTypeCell.setCellValue(nameCheckData.getAccountHolderType());
+
                 }
                 sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 1));
                 sheet.addMergedRegion(new CellRangeAddress(0, 0, 3, 7));
