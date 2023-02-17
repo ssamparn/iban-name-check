@@ -26,8 +26,8 @@ public class FileMapper {
             e.printStackTrace();
         }
 
-        Flux<DataBuffer> body = filePart.content();
-        DataBufferUtils.write(body, pipedOutputStream)
+        Flux<DataBuffer> dataBufferFlux = filePart.content();
+        DataBufferUtils.write(dataBufferFlux, pipedOutputStream)
                 .log("Writing to output buffer")
                 .subscribe();
 

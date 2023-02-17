@@ -42,7 +42,7 @@ public class FileMapper {
 
     public InputStream getFilePartRequestAsInputStream(FilePart filePart) {
         PipedOutputStream pipedOutputStream = new PipedOutputStream();
-        PipedInputStream pipedInputStream = new PipedInputStream(1024 * 10 * 20);
+        PipedInputStream pipedInputStream = new PipedInputStream(1024 * 30 * 30);
         try {
             pipedInputStream.connect(pipedOutputStream);
         } catch (IOException e) {

@@ -23,11 +23,11 @@ public class IbanNameCheckBusinessImpl {
         return this.painFileService.processPainFile(filePartMono);
     }
 
-    public Flux<List<IbanNameModel>> uploadExcelFileAsFlux(Flux<FilePart> filePartFlux) {
-        return excelFileService.processExcelFileAsFlux(filePartFlux);
-    }
-
     public Mono<ByteArrayInputStream> uploadExcelFileAsMono(Mono<FilePart> filePartMono) {
         return excelFileService.processExcelFileAsMono(filePartMono);
+    }
+
+    public Flux<List<IbanNameModel>> uploadExcelFileAsFlux(Flux<FilePart> filePartFlux) {
+        return excelFileService.processExcelFileAsFlux(filePartFlux);
     }
 }

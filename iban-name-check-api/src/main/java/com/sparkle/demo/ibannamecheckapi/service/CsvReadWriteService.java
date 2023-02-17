@@ -1,6 +1,5 @@
 package com.sparkle.demo.ibannamecheckapi.service;
 
-import com.sparkle.demo.ibannamecheckapi.document.IbanNameDocument;
 import com.sparkle.demo.ibannamecheckapi.web.model.response.BulkResponse;
 import com.sparkle.demo.ibannamecheckcommon.model.utils.ByteArrayInOutStream;
 import lombok.extern.slf4j.Slf4j;

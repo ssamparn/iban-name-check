@@ -4,6 +4,7 @@ import com.sparkle.demo.ibannamecheckcommon.model.surepay.request.IbanNameCheckR
 import com.sparkle.demo.ibannamecheckcommon.model.surepay.response.IbanNameCheckResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -16,7 +17,7 @@ public class IbanNameCheckJsonClient {
     private final WebClient surePayClient;
 
     @Autowired
-    public IbanNameCheckJsonClient(WebClient surePayClient) {
+    public IbanNameCheckJsonClient(@Qualifier("jsonWebClient") WebClient surePayClient) {
         this.surePayClient = surePayClient;
     }
 

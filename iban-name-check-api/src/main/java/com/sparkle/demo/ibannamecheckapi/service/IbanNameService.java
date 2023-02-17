@@ -79,9 +79,6 @@ public class IbanNameService {
                     jsonRequest.setName(entry.getValue());
                     return jsonRequest;
                 }).toList();
-
-
         return jsonRequests;
     }
-
 }

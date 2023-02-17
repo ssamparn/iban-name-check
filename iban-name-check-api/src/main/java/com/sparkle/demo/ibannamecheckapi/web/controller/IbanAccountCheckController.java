@@ -5,8 +5,10 @@ import com.sparkle.demo.ibannamecheckapi.web.model.request.IbanAccountCheckReque
 import com.sparkle.demo.ibannamecheckapi.web.model.response.IbanAccountCheckResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
@@ -22,6 +24,8 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/v2/account")
 @RequiredArgsConstructor
 public class IbanAccountCheckController {
+
+    String fileName = String.format("%s.csv", RandomStringUtils.randomAlphabetic(10));
 
     private final IbanNameService ibanNameService;
 
@@ -40,6 +44,13 @@ public class IbanAccountCheckController {
 
         return this.ibanNameService.doCsvPayloadCheck(filePartMono)
                 .map(InputStreamResource::new)
-                .map(ResponseEntity::ok);
+                .map(inputStreamResource -> ResponseEntity.ok().headers(responseHeaders()).body(inputStreamResource));
+    }
+
+    private HttpHeaders responseHeaders() {
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentType(MediaType.TEXT_PLAIN);
+        responseHeaders.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+        return responseHeaders;
     }
 }
