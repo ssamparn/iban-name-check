@@ -21,3 +21,10 @@ spring:
   mongodb:
     embedded:
       version: 5.0.6
+
+client.ssl:
+  trustStore: truststore.jks
+  trustStorePassword: password
+  keyStore: keystore.jks
+  keyStorePassword: password
+  type: jks

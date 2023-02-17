@@ -1,6 +1,7 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.config;
 
 import io.netty.channel.ChannelOption;
+import io.netty.handler.ssl.SslContext;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -20,16 +21,16 @@ import java.util.List;
 
 @Slf4j
 @Configuration
-public class IbanNameCheckClientConfig {
+public class WebClientConfig {
 
     @Value("${service.url.sure-pay}")
     private String baseUrl;
 
     @Bean("jsonWebClient")
-    public WebClient jsonWebClient() {
+    public WebClient jsonWebClient(SslContext sslContext) {
         return WebClient.builder()
                 .baseUrl(baseUrl)
-                .clientConnector(new ReactorClientHttpConnector(jsonHttpClient()))
+                .clientConnector(new ReactorClientHttpConnector(jsonHttpClient(sslContext)))
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .filters(exchangeFilterFunctions -> {
                     exchangeFilterFunctions.add(logRequest());
@@ -38,33 +39,42 @@ public class IbanNameCheckClientConfig {
                 .build();
     }
 
-    private HttpClient jsonHttpClient() {
+    @Bean
+    public HttpClient jsonHttpClient(SslContext sslContext) {
         return HttpClient.create()
+                .secure(sslContextSpec -> sslContextSpec.sslContext(sslContext))
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10_000)
+                .wiretap(true)
                 .doOnConnected(connection -> connection
                         .addHandlerLast(new ReadTimeoutHandler(10))
                         .addHandlerLast(new WriteTimeoutHandler(10)));
     }
 
     @Bean("csvWebClient")
-    public WebClient csvWebClient() {
+    public WebClient csvWebClient(SslContext sslContext) {
         return WebClient.builder()
                 .baseUrl(baseUrl)
-                .clientConnector(new ReactorClientHttpConnector(csvHttpClient()))
+                .clientConnector(new ReactorClientHttpConnector(csvHttpClient(sslContext)))
                 .codecs(csvCodecConfigurer -> {
                     csvCodecConfigurer.customCodecs().register(csvFilePartReader());
+                })
+                .filters(exchangeFilterFunctions -> {
+                    exchangeFilterFunctions.add(logRequest());
+                    exchangeFilterFunctions.add(logResponse());
                 })
                 .build();
     }
 
-    public DefaultPartHttpMessageReader csvFilePartReader() {
+    private DefaultPartHttpMessageReader csvFilePartReader() {
         return new DefaultPartHttpMessageReader();
     }
 
-
-    private HttpClient csvHttpClient() {
+    @Bean
+    public HttpClient csvHttpClient(SslContext sslContext) {
         return HttpClient.create()
+                .secure(sslContextSpec -> sslContextSpec.sslContext(sslContext))
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10_000)
+                .wiretap(true)
                 .doOnConnected(connection -> connection
                         .addHandlerLast(new ReadTimeoutHandler(10))
                         .addHandlerLast(new WriteTimeoutHandler(10)));
