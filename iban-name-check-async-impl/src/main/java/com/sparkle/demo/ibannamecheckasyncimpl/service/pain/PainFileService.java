@@ -3,16 +3,15 @@ package com.sparkle.demo.ibannamecheckasyncimpl.service.pain;
 import com.sparkle.demo.ibannamecheckasyncimpl.client.IbanNameCheckJsonClient;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.FinalResult;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.FinalStatus;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.service.ExcelWriteService;
 import com.sparkle.demo.ibannamecheckcommon.model.ct.request.Document;
 import com.sparkle.demo.ibannamecheckcommon.model.ct.request.PaymentInformation;
 import com.sparkle.demo.ibannamecheckcommon.model.surepay.request.AccountId;
 import com.sparkle.demo.ibannamecheckcommon.model.surepay.request.BulkRequest;
 import com.sparkle.demo.ibannamecheckcommon.model.surepay.request.IbanNameCheckRequest;
-import com.sparkle.demo.ibannamecheckcommon.model.surepay.response.ResultType;
 import com.sparkle.demo.ibannamecheckcommon.model.surepay.response.IbanNameCheckResponse;
 import com.sparkle.demo.ibannamecheckasyncimpl.mapper.FileMapper;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.IbanNameCheckData;
-import com.sparkle.demo.ibannamecheckasyncimpl.web.service.CsvReadWriteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.codec.multipart.FilePart;
@@ -32,7 +31,7 @@ public class PainFileService {
 
     private final FileMapper fileMapper;
     private final IbanNameCheckJsonClient ibanNameCheckClient;
-    private final CsvReadWriteService csvReadWriteService;
+    private final ExcelWriteService excelWriteService;
 
     public Mono<ByteArrayInputStream> processPainFile(Mono<FilePart> filePart) {
         return filePart
@@ -43,7 +42,7 @@ public class PainFileService {
                 .map(this::mapToSurePayRequest)
                 .flatMap(ibanNameCheckClient::doPost)
                 .map(this::mapToIbanNameCheckData)
-                .flatMap(csvReadWriteService::generateCsvResponse)
+                .flatMap(excelWriteService::writeToExcel)
                 .subscribeOn(Schedulers.boundedElastic());
     }
 

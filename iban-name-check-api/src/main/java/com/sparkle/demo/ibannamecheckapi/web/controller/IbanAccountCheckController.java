@@ -25,7 +25,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class IbanAccountCheckController {
 
-    String fileName = String.format("%s.csv", RandomStringUtils.randomAlphabetic(10));
+    private String fileName = String.format("%s.csv", RandomStringUtils.randomAlphabetic(10));
 
     private final IbanNameService ibanNameService;
 

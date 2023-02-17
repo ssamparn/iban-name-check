@@ -19,6 +19,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import static com.sparkle.demo.ibannamecheckasyncimpl.web.util.ResponseHeaderUtil.responseHeaders;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/v1")
@@ -32,7 +34,7 @@ public class IbanNameCheckAsyncController {
                                      @RequestHeader("Content-Length") long contentLength) {
         return this.ibanNameCheckBusiness.uploadPainFile(filePartMono)
                 .map(InputStreamResource::new)
-                .map(ResponseEntity::ok);
+                .map(inputStreamResource -> ResponseEntity.ok().headers(responseHeaders()).body(inputStreamResource));
     }
 
     @PostMapping(value = "/upload-excel-file-mono", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -46,6 +48,4 @@ public class IbanNameCheckAsyncController {
     public Flux<List<IbanNameModel>> uploadExcelFileFlux(@RequestPart("fileToUpload") Flux<FilePart> filePartFlux) {
         return this.ibanNameCheckBusiness.uploadExcelFileAsFlux(filePartFlux);
     }
-
-
 }

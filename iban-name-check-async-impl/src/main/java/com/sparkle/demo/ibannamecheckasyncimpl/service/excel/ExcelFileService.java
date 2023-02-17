@@ -1,12 +1,13 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.service.excel;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparkle.demo.ibannamecheckasyncimpl.client.IbanNameCheckCsvClient;
 import com.sparkle.demo.ibannamecheckasyncimpl.mapper.FileMapper;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.IbanNameModel;
-import com.sparkle.demo.ibannamecheckasyncimpl.web.service.CsvReadWriteService;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.IbanNameCheckData;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.service.CsvWriteService;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.service.ExcelWriteService;
-import com.sparkle.demo.ibannamecheckcommon.model.surepay.response.IbanNameCheckResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
@@ -32,14 +33,14 @@ public class ExcelFileService {
 
     private final FileMapper fileMapper;
     private final IbanNameCheckCsvClient ibanNameCheckClient;
-    private final CsvReadWriteService csvReadWriteService;
+    private final CsvWriteService csvWriteService;
     private final ExcelWriteService excelWriteService;
 
     public Mono<ByteArrayInputStream> processExcelFileAsMono(Mono<FilePart> filePartMono) {
         return filePartMono
             .map(fileMapper::getFilePartRequestAsInputStream)
             .map(fileMapper::excelToIbanNameModel)
-            .flatMap(csvReadWriteService::createCsvRequest)
+            .flatMap(csvWriteService::createCsvRequest)
             .map(InputStreamResource::new)
             .map(ibanNameCheckClient::doPost)
             .map(this::toInputStream)
@@ -70,11 +71,11 @@ public class ExcelFileService {
         return pipedInputStream;
     }
 
-    private IbanNameCheckResponse toBulkResponse(InputStream inputStream) {
+    private List<IbanNameCheckData> toBulkResponse(InputStream inputStream) {
         ObjectMapper mapper = new ObjectMapper();
-        IbanNameCheckResponse json = null;
+        List<IbanNameCheckData> json = null;
         try {
-            json = mapper.readValue(inputStream, IbanNameCheckResponse.class);
+            json = mapper.readValue(inputStream, new TypeReference<List<IbanNameCheckData>>(){});
         } catch (IOException e) {
             e.printStackTrace();
         }

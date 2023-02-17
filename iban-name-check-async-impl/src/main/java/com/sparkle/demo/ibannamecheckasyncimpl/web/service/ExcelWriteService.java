@@ -1,7 +1,6 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.web.service;
 
-import com.sparkle.demo.ibannamecheckcommon.model.surepay.response.BulkResponse;
-import com.sparkle.demo.ibannamecheckcommon.model.surepay.response.IbanNameCheckResponse;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.IbanNameCheckData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
@@ -18,12 +17,13 @@ import reactor.core.scheduler.Schedulers;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Service
 public class ExcelWriteService {
 
-    public Mono<ByteArrayInputStream> writeToExcel(IbanNameCheckResponse bulkResponses) {
+    public Mono<ByteArrayInputStream> writeToExcel(List<IbanNameCheckData> ibanNames) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         return Mono.fromCallable(() -> {
             try(Workbook workbook = new XSSFWorkbook()) {
@@ -51,19 +51,19 @@ public class ExcelWriteService {
 
                 //Set data
                 int rowNum = 1;
-                for (BulkResponse response : bulkResponses.getBatchResponse()) {
+                for (IbanNameCheckData nameCheckData : ibanNames) {
                     Row empDataRow = sheet.createRow(rowNum++);
                     Cell empIdCell = empDataRow.createCell(0);
                     empIdCell.setCellStyle(cellStyle);
-                    empIdCell.setCellValue(response.getResult().getSuggestedName());
+                    empIdCell.setCellValue(nameCheckData.getCounterPartyAccountNumber());
 
                     Cell empNameCell = empDataRow.createCell(1);
                     empNameCell.setCellStyle(cellStyle);
-                    empNameCell.setCellValue(response.getResult().getAccountResult().getIban());
+                    empNameCell.setCellValue(nameCheckData.getCounterPartyAccountName());
 
                     Cell empRoleCell = empDataRow.createCell(2);
                     empRoleCell.setCellStyle(cellStyle);
-                    empRoleCell.setCellValue(response.getResult().getAccountResult().getAccountStatus().name());
+                    empRoleCell.setCellValue(nameCheckData.getStatus().name());
                 }
                 workbook.write(stream);
                 return new ByteArrayInputStream(stream.toByteArray());
