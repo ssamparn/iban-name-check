@@ -22,10 +22,6 @@ public class CsvWriteService {
         ACCOUNT, STATUS, ISMATCHED
     }
 
-    enum ResponseCsvHeaders {
-        IBAN, NAAM, Resultaat, info, NaamSuggestie, Status, AccountHolderType
-    }
-
     public Mono<ByteArrayInputStream> createCsvRequest(List<IbanNameModel> ibanNameModels) {
         final CSVFormat format = CSVFormat.RFC4180.withHeader(RequestCsvHeaders.class);
         return Mono.fromCallable(() -> {
@@ -42,21 +38,4 @@ public class CsvWriteService {
             }
         }).subscribeOn(Schedulers.boundedElastic());
     }
-//
-//    public Mono<ByteArrayInputStream> generateCsvResponse(List<IbanNameCheckData> ibanNameCheckDataList) {
-//        final CSVFormat format = CSVFormat.RFC4180.withHeader(ResponseCsvHeaders.class);
-//        return Mono.fromCallable(() -> {
-//            try {
-//                ByteArrayInOutStream stream = new ByteArrayInOutStream();
-//                OutputStreamWriter streamWriter = new OutputStreamWriter(stream);
-//                CSVPrinter csvPrinter = new CSVPrinter(streamWriter, format);
-//
-//                csvPrinter.printRecords(ibanNameCheckDataList);
-//                csvPrinter.flush();
-//                return new ByteArrayInputStream(stream.toByteArray());
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }).subscribeOn(Schedulers.boundedElastic());
-//    }
 }
