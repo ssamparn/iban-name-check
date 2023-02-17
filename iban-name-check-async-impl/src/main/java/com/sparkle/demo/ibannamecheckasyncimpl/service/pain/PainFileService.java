@@ -1,6 +1,8 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.service.pain;
 
 import com.sparkle.demo.ibannamecheckasyncimpl.client.IbanNameCheckJsonClient;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.FinalResult;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.FinalStatus;
 import com.sparkle.demo.ibannamecheckcommon.model.ct.request.Document;
 import com.sparkle.demo.ibannamecheckcommon.model.ct.request.PaymentInformation;
 import com.sparkle.demo.ibannamecheckcommon.model.surepay.request.AccountId;
@@ -35,8 +37,8 @@ public class PainFileService {
     public Mono<ByteArrayInputStream> processPainFile(Mono<FilePart> filePart) {
         return filePart
                 .map(fileMapper::getFilePartRequestAsInputStream)
-                .map(inputStream -> (PipedInputStream) inputStream) // Refactor this line
-                .flatMap(fileMapper::readContentFromPipedInputStream)// Refactor this line
+                .map(inputStream -> (PipedInputStream) inputStream)
+                .flatMap(fileMapper::readContentFromPipedInputStream)
                 .flatMap(fileMapper::mapToRootDocument)
                 .map(this::mapToSurePayRequest)
                 .flatMap(ibanNameCheckClient::doPost)
@@ -49,9 +51,14 @@ public class PainFileService {
         List<IbanNameCheckData> ibanNameCheckDataList =  surePayResponse.getBatchResponse().stream()
             .map(bulkResponse -> {
                 IbanNameCheckData ibanNameCheckData = new IbanNameCheckData();
-                ibanNameCheckData.setAccount(bulkResponse.getResult().getAccountResult().getIban());
-                ibanNameCheckData.setStatus(bulkResponse.getResult().getAccountResult().getAccountStatus().name());
-                ibanNameCheckData.setMatched(bulkResponse.getResult().getResultType() == ResultType.MATCHING);
+                ibanNameCheckData.setCounterPartyAccountNumber(bulkResponse.getResult().getAccountResult().getIban());
+                ibanNameCheckData.setCounterPartyAccountName(bulkResponse.getResult().getAccountResult().getAccountHolderType());
+
+                ibanNameCheckData.setFinalResult(FinalResult.valueOf(bulkResponse.getResult().getResultType().name()));
+                ibanNameCheckData.setInfo("small info");
+                ibanNameCheckData.setSuggestedName(bulkResponse.getResult().getSuggestedName());
+                ibanNameCheckData.setStatus(FinalStatus.ACTIVE);
+                ibanNameCheckData.setAccountHolderType("ORG");
                 return ibanNameCheckData;
             }).collect(Collectors.toList());
 

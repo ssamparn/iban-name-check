@@ -24,7 +24,7 @@ public class CsvReadWriteService {
     }
 
     enum ResponseCsvHeaders {
-        ACCOUNT, STATUS, ISMATCHED
+        IBAN, NAAM, Resultaat, info, NaamSuggestie, Status, AccountHolderType
     }
 
     public Mono<ByteArrayInputStream> createCsvRequest(List<IbanNameModel> ibanNameModels) {
