@@ -37,11 +37,11 @@ public class IbanNameCheckAsyncController {
                 .map(inputStreamResource -> ResponseEntity.ok().headers(responseHeaders()).body(inputStreamResource));
     }
 
-    @PostMapping(value = "/upload-excel-file-mono", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/upload-excel-file-mono", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Mono<ResponseEntity<Resource>> uploadExcelFileMono(@RequestPart("fileToUpload") Mono<FilePart> filePartMono) {
         return this.ibanNameCheckBusiness.uploadExcelFileAsMono(filePartMono)
                 .map(InputStreamResource::new)
-                .map(ResponseEntity::ok);
+                .map(inputStreamResource -> ResponseEntity.ok().headers(responseHeaders()).body(inputStreamResource));
     }
 
     @PostMapping(value = "/upload-excel-file-flux", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

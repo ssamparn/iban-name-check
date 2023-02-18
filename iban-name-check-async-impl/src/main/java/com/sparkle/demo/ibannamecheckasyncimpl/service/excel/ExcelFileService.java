@@ -1,7 +1,6 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.service.excel;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.opencsv.bean.CsvToBeanBuilder;
 import com.sparkle.demo.ibannamecheckasyncimpl.client.IbanNameCheckCsvClient;
 import com.sparkle.demo.ibannamecheckasyncimpl.mapper.FileMapper;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.IbanNameModel;
@@ -21,6 +20,7 @@ import reactor.core.scheduler.Schedulers;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.List;
@@ -40,12 +40,18 @@ public class ExcelFileService {
             .map(fileMapper::getFilePartRequestAsInputStream)
             .map(fileMapper::excelToIbanNameModel)
             .flatMap(csvWriteService::createCsvRequest)
-//            .map(InputStreamResource::new)
             .map(ibanNameCheckClient::doPost)
             .map(this::toInputStream)
             .map(this::toBulkResponse)
             .flatMap(excelWriteService::writeToExcel)
             .subscribeOn(Schedulers.boundedElastic());
+    }
+
+    public Flux<List<IbanNameModel>> processExcelFileAsFlux(Flux<FilePart> filePartFlux) {
+        return filePartFlux
+                .map(fileMapper::getFilePartRequestAsInputStream)
+                .map(fileMapper::excelToIbanNameModel)
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
     private InputStream toInputStream(Flux<DataBuffer> dataBufferFlux) {
@@ -71,20 +77,14 @@ public class ExcelFileService {
     }
 
     private List<IbanNameCheckData> toBulkResponse(InputStream inputStream) {
-        ObjectMapper mapper = new ObjectMapper();
-        List<IbanNameCheckData> json = null;
-        try {
-            json = mapper.readValue(inputStream, new TypeReference<List<IbanNameCheckData>>(){});
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return json;
-    }
 
-    public Flux<List<IbanNameModel>> processExcelFileAsFlux(Flux<FilePart> filePartFlux) {
-        return filePartFlux
-                .map(fileMapper::getFilePartRequestAsInputStream)
-                .map(fileMapper::excelToIbanNameModel)
-                .subscribeOn(Schedulers.boundedElastic());
+        List<IbanNameCheckData> ibanNameCheckData = new CsvToBeanBuilder<IbanNameCheckData>(new InputStreamReader(inputStream))
+                .withType(IbanNameCheckData.class)
+                .build()
+                .parse();
+
+        ibanNameCheckData.forEach(data -> log.info("ibanNameCheckData after parsed from CSV : {}", data));
+
+        return ibanNameCheckData;
     }
 }

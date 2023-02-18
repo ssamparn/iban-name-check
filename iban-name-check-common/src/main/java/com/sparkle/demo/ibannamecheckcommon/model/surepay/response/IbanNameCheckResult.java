@@ -14,6 +14,9 @@ public class IbanNameCheckResult implements Serializable {
 
     private ResultType resultType;
 
+    @JsonProperty("name")
+    private String accountHolderName;
+
     @JsonProperty("nameSuggestion")
     private String suggestedName;
 

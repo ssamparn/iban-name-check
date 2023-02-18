@@ -40,6 +40,7 @@ public class IbanNameResponseFactory {
                 BulkResponse response = new BulkResponse();
                 response.setResult(IbanAccountCheckResult.create(
                     ResultType.MATCHING,
+                    ibanNameDocument.getAccountHolderName(),
                     ibanNameDocument.getAccountHolderNameInitials(),
                     this.toAccount(ibanNameDocument)
                 ));

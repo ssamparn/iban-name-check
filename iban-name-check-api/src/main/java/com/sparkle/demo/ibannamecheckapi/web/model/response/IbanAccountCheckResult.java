@@ -12,6 +12,9 @@ public class IbanAccountCheckResult {
 
     private ResultType resultType;
 
+    @JsonProperty("name")
+    private String accountHolderName;
+
     @JsonProperty("nameSuggestion")
     private String suggestedName;
 

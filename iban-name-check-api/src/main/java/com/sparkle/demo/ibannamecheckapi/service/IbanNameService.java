@@ -30,7 +30,7 @@ public class IbanNameService {
     private final FileMapper fileMapper;
     private final IbanNameResponseFactory ibanNameResponseFactory;
     private final IbanNameRepository ibanNameRepository;
-    private final CsvReadWriteService csvReadWriteService;
+    private final CsvWriteService csvWriteService;
 
     public Mono<IbanAccountCheckResponse> doJsonPayloadCheck(Mono<IbanAccountCheckRequest> requestMono) {
         return requestMono
@@ -46,7 +46,7 @@ public class IbanNameService {
     public Mono<ByteArrayInputStream> doCsvPayloadCheck(Mono<FilePart> filePartMono) {
         return filePartMono
                 .map(fileMapper::getFilePartRequestAsInputStream)
-                .map(inputStream -> (PipedInputStream) inputStream) // Refactor this line
+                .map(inputStream -> (PipedInputStream) inputStream)
                 .flatMap(fileMapper::readContentFromPipedInputStream)
                 .map(this::processAndGetLinesAsList)
                 .map(this::processList)
@@ -55,8 +55,7 @@ public class IbanNameService {
                 .flatMap(ibanNameDocument -> ibanNameRepository.findByAccountNumber(ibanNameDocument.getAccountNumber()))
                 .collectList()
                 .map(ibanNameResponseFactory::toModel)
-                .map(IbanAccountCheckResponse::getBatchResponse)
-                .flatMap(csvReadWriteService::generateCsvResponse)
+                .flatMap(csvWriteService::generateCsvResponse)
                 .subscribeOn(Schedulers.boundedElastic());
     }
 
