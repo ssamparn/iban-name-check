@@ -10,7 +10,6 @@ import com.sparkle.demo.ibannamecheckasyncimpl.web.service.CsvWriteService;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.service.ExcelWriteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.codec.multipart.FilePart;
@@ -41,7 +40,7 @@ public class ExcelFileService {
             .map(fileMapper::getFilePartRequestAsInputStream)
             .map(fileMapper::excelToIbanNameModel)
             .flatMap(csvWriteService::createCsvRequest)
-            .map(InputStreamResource::new)
+//            .map(InputStreamResource::new)
             .map(ibanNameCheckClient::doPost)
             .map(this::toInputStream)
             .map(this::toBulkResponse)
