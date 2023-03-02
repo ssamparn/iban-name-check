@@ -30,11 +30,10 @@ public class IbanNameCheckAsyncController {
     private final IbanNameCheckBusinessImpl ibanNameCheckBusiness;
 
     @PostMapping(value = "/upload-pain-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<ResponseEntity<Resource>> uploadPainFile(@RequestPart("fileToUpload") Mono<FilePart> filePartMono,
-                                     @RequestHeader("Content-Length") long contentLength) {
+    public Mono<ResponseEntity<Resource>> uploadPainFile(@RequestPart("fileToUpload") Mono<FilePart> filePartMono) {
         return this.ibanNameCheckBusiness.uploadPainFile(filePartMono)
                 .map(InputStreamResource::new)
-                .map(inputStreamResource -> ResponseEntity.ok().headers(responseHeaders()).body(inputStreamResource));
+                .map(inputStreamResource -> ResponseEntity.ok().body(inputStreamResource));
     }
 
     @PostMapping(value = "/upload-excel-file-mono", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

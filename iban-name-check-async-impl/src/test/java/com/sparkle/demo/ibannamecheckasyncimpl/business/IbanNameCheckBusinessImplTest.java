@@ -1,6 +1,5 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.business;
 
-import com.sparkle.demo.ibannamecheckasyncimpl.AbstractIntegrationTest;
 import com.sparkle.demo.ibannamecheckasyncimpl.service.excel.ExcelFileService;
 import com.sparkle.demo.ibannamecheckasyncimpl.service.pain.PainFileService;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
@@ -24,10 +25,13 @@ import static org.mockito.Mockito.when;
 
 @Slf4j
 @ExtendWith(SpringExtension.class)
-class IbanNameCheckBusinessImplTest extends AbstractIntegrationTest {
+class IbanNameCheckBusinessImplTest {
 
     private ByteArrayInputStream byteArrayInputStream;
     private ByteArrayOutputStream byteArrayOutputStream;
+
+    @Value("classpath:unit-test/excel/file.xlsx")
+    private Resource excelFile;
 
     @Mock
     private FilePart filePartMock;

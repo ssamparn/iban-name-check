@@ -1,0 +1,30 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "POST",
+        "urlPattern": "/v2/account/check/banks/json"
+      },
+      "response": {
+        "status": 201,
+        "bodyFileName": "iban-name-check-response.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "urlPattern": "/v2/account/check/banks/csv"
+      },
+      "response": {
+        "status": 201,
+        "bodyFileName": "iban-name-check-response.csv",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+  ]
+}
