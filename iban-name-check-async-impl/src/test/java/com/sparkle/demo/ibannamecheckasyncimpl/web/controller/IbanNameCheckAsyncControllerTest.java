@@ -4,9 +4,11 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.common.ConsoleNotifier;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.sparkle.demo.ibannamecheckasyncimpl.IbanNameCheckAsyncImplApplication;
+import com.sparkle.demo.ibannamecheckasyncimpl.repository.IbanNameRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,19 +36,17 @@ class IbanNameCheckAsyncControllerTest {
     @Autowired
     protected WebTestClient webTestClient;
 
+    @Autowired
+    private IbanNameRepository ibanNameRepository;
+
     @BeforeAll
     static void setUpClass() {
         wireMock.start();
     }
 
-    @AfterEach
-    void tearDown() {
-        wireMock.resetAll();
-    }
-
-    @AfterAll
-    static void tearDownClass() {
-        wireMock.shutdown();
+    @BeforeEach
+    public void beforeEach() {
+        ibanNameRepository.deleteAll().block();
     }
 
     @Test
@@ -69,5 +69,15 @@ class IbanNameCheckAsyncControllerTest {
 
     @Test
     void uploadExcelFileFlux() {
+    }
+
+    @AfterEach
+    void tearDown() {
+        wireMock.resetAll();
+    }
+
+    @AfterAll
+    static void tearDownClass() {
+        wireMock.shutdown();
     }
 }

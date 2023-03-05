@@ -12,7 +12,7 @@
 	<groupId>com.sparkle.demo</groupId>
 	<artifactId>iban-name-check-blocking-impl</artifactId>
 	<version>1.0.0</version>
-	<name>iban-name-check-blocking-impl</name>
+	<name>Iban Name Check Blocking Impl</name>
 	<packaging>jar</packaging>
 	<description>Blocking Implementation of IBAN Name Check</description>
 

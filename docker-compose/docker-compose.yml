@@ -1,5 +1,5 @@
 ---
-version: "3.4"
+version: "3.5"
 
 services:
   mysql-container:
@@ -46,11 +46,38 @@ services:
     networks:
       - iban-name-check-network
 
+  postgres:
+    container_name: postgres
+    image: postgres:13.2
+    restart: always
+    environment:
+      - POSTGRES_USER=sashank
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=iban_name_check
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/data/db
+
+  pgadmin:
+    container_name: pgadmin4
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/data/pgadmin
+
 volumes:
   mysql-data-container:
     driver: local
   mongodb_data_container:
     driver: local
+  postgres-data:
+  pgadmin-data:
 
 networks:
   iban-name-check-network:

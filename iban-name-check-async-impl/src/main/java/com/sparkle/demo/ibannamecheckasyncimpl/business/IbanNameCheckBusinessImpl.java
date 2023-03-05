@@ -30,4 +30,8 @@ public class IbanNameCheckBusinessImpl {
     public Flux<List<IbanNameModel>> uploadExcelFileAsFlux(Flux<FilePart> filePartFlux) {
         return excelFileService.processExcelFileAsFlux(filePartFlux);
     }
+
+    public Mono<String> getRealMimeType(Mono<FilePart> filePartMono) {
+        return painFileService.getMimeType(filePartMono);
+    }
 }

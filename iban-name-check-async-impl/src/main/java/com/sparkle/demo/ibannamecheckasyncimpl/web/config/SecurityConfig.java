@@ -1,4 +1,4 @@
-package com.sparkle.demo.ibannamecheckasyncimpl.config;
+package com.sparkle.demo.ibannamecheckasyncimpl.web.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

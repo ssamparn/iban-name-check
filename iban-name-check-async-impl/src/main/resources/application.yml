@@ -1,26 +1,27 @@
 server:
   port: 7071
 
+logging:
+  level:
+    org.springframework.r2dbc: DEBUG
+
 service.url:
   sure-pay: http://localhost:7070/v2/account
 
 spring:
+  application:
+    name: iban-name-check-async
   servlet:
     multipart:
       enabled: true
-  data:
-    mongodb:
-      #      commented for embedded mongo
-      #      host: localhost
-      #      port: 27017
-      database: iban-name-check-database
-      username: root
-      password: rootpassword
-      authentication-database: admin
-      uri: mongodb://root:rootpassword@localhost:27017/iban-name-check-database?authSource=admin&authMechanism=SCRAM-SHA-1
-  mongodb:
-    embedded:
-      version: 5.0.6
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/iban_name_check
+    username: sashank
+    password: password
+#    pool:
+#      enabled: true
+#      initial-size: 5
+#      max-size: 10
 
 client.ssl:
   trustStore: truststore.jks

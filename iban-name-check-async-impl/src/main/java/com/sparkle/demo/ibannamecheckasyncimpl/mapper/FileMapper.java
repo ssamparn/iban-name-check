@@ -14,6 +14,7 @@ import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,6 +55,28 @@ public class FileMapper {
                 .log("Writing to output buffer")
                 .subscribe();
 
+        return pipedInputStream;
+    }
+
+    public InputStream getDataBufferAsInputStream(Flux<DataBuffer> dataBufferFlux) {
+        PipedOutputStream pipedOutputStream = new PipedOutputStream();
+        PipedInputStream pipedInputStream = new PipedInputStream(1024 * 30 * 30);
+        try {
+            pipedInputStream.connect(pipedOutputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        DataBufferUtils.write(dataBufferFlux, pipedOutputStream)
+                .log("Writing to output buffer")
+                .subscribeOn(Schedulers.boundedElastic())
+                .doOnComplete(() -> {
+                    try {
+                        pipedOutputStream.close();
+                    } catch (IOException ignored) {
+
+                    }
+                })
+                .subscribe(DataBufferUtils.releaseConsumer());
         return pipedInputStream;
     }
 

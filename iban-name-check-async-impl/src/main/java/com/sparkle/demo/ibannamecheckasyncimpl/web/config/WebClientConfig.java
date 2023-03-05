@@ -1,4 +1,4 @@
-package com.sparkle.demo.ibannamecheckasyncimpl.config;
+package com.sparkle.demo.ibannamecheckasyncimpl.web.config;
 
 import io.netty.channel.ChannelOption;
 import io.netty.handler.ssl.SslContext;

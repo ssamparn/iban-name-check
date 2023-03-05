@@ -10,7 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,5 +45,10 @@ public class IbanNameCheckAsyncController {
     @PostMapping(value = "/upload-excel-file-flux", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Flux<List<IbanNameModel>> uploadExcelFileFlux(@RequestPart("fileToUpload") Flux<FilePart> filePartFlux) {
         return this.ibanNameCheckBusiness.uploadExcelFileAsFlux(filePartFlux);
+    }
+
+    @PostMapping(value = "/get-mime-type", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Mono<String> getMimeType(@RequestPart("fileToUpload") Mono<FilePart> filePartMono) {
+        return this.ibanNameCheckBusiness.getRealMimeType(filePartMono);
     }
 }
