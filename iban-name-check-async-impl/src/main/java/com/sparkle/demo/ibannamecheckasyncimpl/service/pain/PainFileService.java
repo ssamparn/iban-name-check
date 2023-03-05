@@ -4,7 +4,7 @@ import com.sparkle.demo.ibannamecheckasyncimpl.client.IbanNameCheckJsonClient;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.util.FileUtil;
 import com.sparkle.demo.ibannamecheckasyncimpl.mapper.EntityMapper;
 import com.sparkle.demo.ibannamecheckasyncimpl.mapper.JsonObjectMapper;
-import com.sparkle.demo.ibannamecheckasyncimpl.repository.IbanNameRepository;
+import com.sparkle.demo.ibannamecheckasyncimpl.database.repository.IbanNameRepository;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.service.ExcelWriteService;
 import com.sparkle.demo.ibannamecheckasyncimpl.mapper.FileMapper;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
-package com.sparkle.demo.ibannamecheckasyncimpl.repository;
+package com.sparkle.demo.ibannamecheckasyncimpl.database.repository;
 
-import com.sparkle.demo.ibannamecheckasyncimpl.entity.IbanNameEntity;
+import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameEntity;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 

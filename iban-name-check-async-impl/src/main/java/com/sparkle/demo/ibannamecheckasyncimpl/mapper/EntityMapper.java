@@ -1,6 +1,6 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.mapper;
 
-import com.sparkle.demo.ibannamecheckasyncimpl.entity.IbanNameEntity;
+import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameEntity;
 import com.sparkle.demo.ibannamecheckcommon.model.ct.request.Document;
 import com.sparkle.demo.ibannamecheckcommon.model.ct.request.PaymentInformation;
 import com.sparkle.demo.ibannamecheckcommon.model.surepay.request.AccountId;

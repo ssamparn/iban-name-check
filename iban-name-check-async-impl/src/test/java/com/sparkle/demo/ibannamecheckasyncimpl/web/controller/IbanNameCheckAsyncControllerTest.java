@@ -4,7 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.common.ConsoleNotifier;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.sparkle.demo.ibannamecheckasyncimpl.IbanNameCheckAsyncImplApplication;
-import com.sparkle.demo.ibannamecheckasyncimpl.repository.IbanNameRepository;
+import com.sparkle.demo.ibannamecheckasyncimpl.database.repository.IbanNameRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;

@@ -1,4 +1,4 @@
-package com.sparkle.demo.ibannamecheckasyncimpl.entity;
+package com.sparkle.demo.ibannamecheckasyncimpl.database.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

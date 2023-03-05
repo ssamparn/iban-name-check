@@ -1,7 +1,7 @@
-package com.sparkle.demo.ibannamecheckasyncimpl.config;
+package com.sparkle.demo.ibannamecheckasyncimpl.database.config;
 
-import com.sparkle.demo.ibannamecheckasyncimpl.entity.IbanNameEntity;
-import com.sparkle.demo.ibannamecheckasyncimpl.repository.IbanNameRepository;
+import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameEntity;
+import com.sparkle.demo.ibannamecheckasyncimpl.database.repository.IbanNameRepository;
 import io.r2dbc.spi.ConnectionFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
