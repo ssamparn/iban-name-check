@@ -67,11 +67,11 @@ public class ExcelWriteService {
                     Row ibanNameRow = sheet.createRow(rowNum++);
                     Cell counterPartyAccountNumCell = ibanNameRow.createCell(0);
                     counterPartyAccountNumCell.setCellStyle(cellStyle);
-                    counterPartyAccountNumCell.setCellValue(nameCheckData.getCounterPartyAccountNumber());
+                    counterPartyAccountNumCell.setCellValue(nameCheckData.getCounterPartyAccount());
 
                     Cell counterPartyNameCell = ibanNameRow.createCell(1);
                     counterPartyNameCell.setCellStyle(cellStyle);
-                    counterPartyNameCell.setCellValue(nameCheckData.getCounterPartyAccountName());
+                    counterPartyNameCell.setCellValue(nameCheckData.getCounterPartyName());
 
                     Cell resultTypeCell = ibanNameRow.createCell(3);
                     resultTypeCell.setCellStyle(cellStyle);

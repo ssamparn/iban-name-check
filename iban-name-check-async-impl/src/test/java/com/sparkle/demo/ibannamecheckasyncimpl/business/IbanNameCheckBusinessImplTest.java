@@ -19,6 +19,7 @@ import reactor.test.StepVerifier;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -53,9 +54,9 @@ class IbanNameCheckBusinessImplTest {
 
     @Test
     void uploadPainFile() {
-        when(painFileServiceMock.processPainFile(any(Mono.class))).thenReturn(Mono.just(byteArrayInputStream));
+        when(painFileServiceMock.processPainFile(any(Mono.class), any(UUID.class))).thenReturn(Mono.just(byteArrayInputStream));
 
-        StepVerifier.create(this.ibanNameCheckBusiness.uploadPainFile(Mono.just(filePartMock)))
+        StepVerifier.create(this.ibanNameCheckBusiness.uploadPainFile(Mono.just(filePartMock), UUID.randomUUID()))
                 .expectSubscription()
                 .consumeNextWith((inputStream) -> log.info("inputStream : {}", inputStream.readAllBytes()))
                 .verifyComplete();

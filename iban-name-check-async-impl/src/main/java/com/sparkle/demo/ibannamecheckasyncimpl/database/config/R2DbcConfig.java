@@ -8,6 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.r2dbc.connection.init.CompositeDatabasePopulator;
 import org.springframework.r2dbc.connection.init.ConnectionFactoryInitializer;
 import org.springframework.r2dbc.connection.init.ResourceDatabasePopulator;
 import reactor.core.publisher.Flux;
@@ -24,7 +25,11 @@ public class R2DbcConfig {
 
         ConnectionFactoryInitializer initializer = new ConnectionFactoryInitializer();
         initializer.setConnectionFactory(connectionFactory);
-        initializer.setDatabasePopulator(new ResourceDatabasePopulator(new ClassPathResource("schema.sql")));
+
+        CompositeDatabasePopulator populator = new CompositeDatabasePopulator();
+        populator.addPopulators(new ResourceDatabasePopulator(new ClassPathResource("schema.sql")));
+        populator.addPopulators(new ResourceDatabasePopulator(new ClassPathResource("data.sql")));
+        initializer.setDatabasePopulator(populator);
 
         return initializer;
     }

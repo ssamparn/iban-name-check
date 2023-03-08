@@ -1,5 +1,6 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.business;
 
+import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameCheckResponseEntity;
 import com.sparkle.demo.ibannamecheckasyncimpl.service.excel.ExcelFileService;
 import com.sparkle.demo.ibannamecheckasyncimpl.service.pain.PainFileService;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.IbanNameModel;
@@ -11,6 +12,7 @@ import reactor.core.publisher.Mono;
 
 import java.io.ByteArrayInputStream;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,8 +21,8 @@ public class IbanNameCheckBusinessImpl {
     private final PainFileService painFileService;
     private final ExcelFileService excelFileService;
 
-    public Mono<ByteArrayInputStream> uploadPainFile(Mono<FilePart> filePartMono) {
-        return this.painFileService.processPainFile(filePartMono);
+    public Mono<ByteArrayInputStream> uploadPainFile(Mono<FilePart> filePartMono, UUID correlationId) {
+        return this.painFileService.processPainFile(filePartMono, correlationId);
     }
 
     public Mono<ByteArrayInputStream> uploadExcelFileAsMono(Mono<FilePart> filePartMono) {
@@ -33,5 +35,9 @@ public class IbanNameCheckBusinessImpl {
 
     public Mono<String> getRealMimeType(Mono<FilePart> filePartMono) {
         return painFileService.getMimeType(filePartMono);
+    }
+
+    public Flux<IbanNameCheckResponseEntity> downloadStatus(String correlationId) {
+        return this.painFileService.downloadUpdatedStatus(correlationId);
     }
 }

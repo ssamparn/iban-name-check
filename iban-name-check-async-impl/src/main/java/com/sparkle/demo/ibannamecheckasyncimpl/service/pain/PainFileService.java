@@ -1,6 +1,8 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.service.pain;
 
 import com.sparkle.demo.ibannamecheckasyncimpl.client.IbanNameCheckJsonClient;
+import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameCheckResponseEntity;
+import com.sparkle.demo.ibannamecheckasyncimpl.database.repository.IbanNameCheckResponseRepository;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.util.FileUtil;
 import com.sparkle.demo.ibannamecheckasyncimpl.mapper.EntityMapper;
 import com.sparkle.demo.ibannamecheckasyncimpl.mapper.JsonObjectMapper;
@@ -11,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -29,18 +32,21 @@ public class PainFileService {
     private final IbanNameCheckJsonClient ibanNameCheckClient;
     private final ExcelWriteService excelWriteService;
     private final EntityMapper entityMapper;
-    private final IbanNameRepository repository;
+    private final IbanNameRepository ibanNameRepository;
+    private final IbanNameCheckResponseRepository ibanNameCheckResponseRepository;
 
-    public Mono<ByteArrayInputStream> processPainFile(Mono<FilePart> filePart) {
+    public Mono<ByteArrayInputStream> processPainFile(Mono<FilePart> filePart, UUID correlationId) {
         return filePart
                 .map(fileMapper::getFilePartRequestAsInputStream)
                 .map(inputStream -> (PipedInputStream) inputStream)
                 .flatMap(fileMapper::readContentFromPipedInputStream)
                 .flatMap(fileMapper::mapToRootDocument)
-                .map(document -> entityMapper.mapToEntity(UUID.fromString("395c60bd-d60f-4a3e-b383-bcc63b0dd1d2"), document))
-                .map(repository::saveAll)
-                .flatMap(entityMapper::toIbanNameCheckRequest)
+                .map(document -> entityMapper.mapToIbanNameEntity(correlationId, document))
+                .map(ibanNameRepository::saveAll)
+                .flatMap(jsonMapper::toIbanNameCheckRequest)
                 .flatMap(ibanNameCheckClient::doPost)
+                .map(response -> entityMapper.mapToIbanNameCheckResponseEntity(correlationId, response))
+                .map(ibanNameCheckResponseRepository::saveAll)
                 .map(jsonMapper::mapToIbanNameCheckData)
                 .flatMap(excelWriteService::writeToExcel)
                 .subscribeOn(Schedulers.boundedElastic());
@@ -50,5 +56,9 @@ public class PainFileService {
         return filePart
                 .map(fileMapper::getFilePartRequestAsInputStream)
                 .flatMap(fileUtil::getRealMimeType);
+    }
+
+    public Flux<IbanNameCheckResponseEntity> downloadUpdatedStatus(String correlationId) {
+        return ibanNameCheckResponseRepository.getAllByCorrelationId(UUID.fromString(correlationId));
     }
 }

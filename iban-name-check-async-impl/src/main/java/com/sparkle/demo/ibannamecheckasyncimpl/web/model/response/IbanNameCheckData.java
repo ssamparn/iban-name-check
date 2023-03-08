@@ -7,10 +7,10 @@ import lombok.Data;
 public class IbanNameCheckData {
 
     @CsvBindByName(column = "Iban")
-    private String counterPartyAccountNumber;
+    private String counterPartyAccount;
 
     @CsvBindByName(column = "Naam")
-    private String counterPartyAccountName;
+    private String counterPartyName;
 
     @CsvBindByName(column = "Resultaat")
     private FinalResult finalResult;

@@ -1,16 +1,14 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.mapper;
 
+import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameCheckResponseEntity;
 import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameEntity;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.FinalStatus;
 import com.sparkle.demo.ibannamecheckcommon.model.ct.request.Document;
 import com.sparkle.demo.ibannamecheckcommon.model.ct.request.PaymentInformation;
-import com.sparkle.demo.ibannamecheckcommon.model.surepay.request.AccountId;
-import com.sparkle.demo.ibannamecheckcommon.model.surepay.request.BulkRequest;
-import com.sparkle.demo.ibannamecheckcommon.model.surepay.request.IbanNameCheckRequest;
+import com.sparkle.demo.ibannamecheckcommon.model.surepay.response.IbanNameCheckResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,7 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EntityMapper {
 
-    public List<IbanNameEntity> mapToEntity(UUID correlationId, Document rootDocument) {
+    public List<IbanNameEntity> mapToIbanNameEntity(UUID correlationId, Document rootDocument) {
         return rootDocument.getCustomerCreditTransferInitiation().getPaymentInformation()
                 .stream()
                 .map(PaymentInformation::getCreditTransferTransactionInformation)
@@ -34,29 +32,24 @@ public class EntityMapper {
                 }).collect(Collectors.toList());
     }
 
-    public Mono<IbanNameCheckRequest> toIbanNameCheckRequest(Flux<IbanNameEntity> ibanNameCheckEntityFlux) {
-        return ibanNameCheckEntityFlux.collectList()
-                .map(this::mapToSurePayRequest);
-    }
+    public List<IbanNameCheckResponseEntity> mapToIbanNameCheckResponseEntity(UUID correlationId, IbanNameCheckResponse surePayResponse) {
+        List<IbanNameCheckResponseEntity> ibanNameCheckResponseEntities =  surePayResponse.getBatchResponse().stream()
+                .map(bulkResponse -> {
+                    IbanNameCheckResponseEntity entity = new IbanNameCheckResponseEntity();
+                    entity.setCorrelationId(correlationId);
+                    entity.setCounterPartyAccount(bulkResponse.getResult().getAccountResult().getIban());
+                    entity.setCounterPartyName(bulkResponse.getResult().getAccountHolderName());
 
-    private IbanNameCheckRequest mapToSurePayRequest(List<IbanNameEntity> ibanNameEntities) {
-        IbanNameCheckRequest ibanNameCheckRequest = new IbanNameCheckRequest();
-        List<BulkRequest> batchRequest = this.mapToBulkRequest(ibanNameEntities);
+                    entity.setFinalResult(bulkResponse.getResult().getResultType().name());
+                    entity.setInfo("small info");
+                    entity.setSuggestedName(bulkResponse.getResult().getSuggestedName());
+                    entity.setStatus(FinalStatus.ACTIVE.name());
+                    entity.setAccountHolderType("ORG");
+                    return entity;
+                }).collect(Collectors.toList());
 
-        ibanNameCheckRequest.setBatchRequest(batchRequest);
-
-        log.info("iban name check request: {}", ibanNameCheckRequest);
-        return ibanNameCheckRequest;
-    }
-
-    private List<BulkRequest> mapToBulkRequest(List<IbanNameEntity> ibanNameEntities) {
-        return ibanNameEntities
-                .stream()
-                .map(entity -> {
-                    BulkRequest bulkRequest = new BulkRequest();
-                    bulkRequest.setAccountId(AccountId.create(entity.getCounterPartyAccount(), "IBAN"));
-                    bulkRequest.setName(entity.getCounterPartyName());
-                    return bulkRequest;
-                }).toList();
+        log.info("mapped ibanNameCheckResponseEntities size : {}", ibanNameCheckResponseEntities.size());
+        log.info("mapped ibanNameCheckResponseEntities : {}", ibanNameCheckResponseEntities);
+        return ibanNameCheckResponseEntities;
     }
 }
