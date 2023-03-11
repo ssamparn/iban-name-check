@@ -1,4 +1,4 @@
-package com.sparkle.demo.ibannamecheckasyncimpl.config;
+package com.sparkle.demo.ibannamecheckasyncimpl.config.util;
 
 import com.sparkle.demo.ibannamecheckasyncimpl.web.exception.ConfigurationException;
 import lombok.extern.slf4j.Slf4j;

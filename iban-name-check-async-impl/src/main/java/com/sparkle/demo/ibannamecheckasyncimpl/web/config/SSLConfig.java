@@ -1,6 +1,6 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.web.config;
 
-import com.sparkle.demo.ibannamecheckasyncimpl.config.KeyStoreUtil;
+import com.sparkle.demo.ibannamecheckasyncimpl.config.util.KeyStoreUtil;
 import com.sparkle.demo.ibannamecheckasyncimpl.config.properties.KeyStoreProperties;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.exception.ConfigurationException;
 import io.netty.handler.ssl.SslContext;
