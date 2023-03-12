@@ -7,5 +7,5 @@ import reactor.core.publisher.Flux;
 import java.util.UUID;
 
 public interface IbanNameRepository extends ReactiveCrudRepository<IbanNameEntity, UUID> {
-    Flux<IbanNameEntity> getIbanNameEntitiesByCorrelationId(UUID correlationId);
+    Flux<IbanNameEntity> getIbanNameEntitiesByCorrelationId(UUID transactionId);
 }

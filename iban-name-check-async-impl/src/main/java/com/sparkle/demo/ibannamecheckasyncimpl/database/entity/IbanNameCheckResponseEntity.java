@@ -16,9 +16,11 @@ public class IbanNameCheckResponseEntity {
     private String counterPartyAccount;
     private UUID correlationId;
     private String counterPartyName;
-    private String finalResult;
-    private String info;
-    private String suggestedName;
-    private String status;
+    private UUID transactionId;
+    private String matchingResult;
+    private String accountStatus;
     private String accountHolderType;
+    private String switchingServiceStatus;
+    private String switchedToIban;
+    private String message;
 }

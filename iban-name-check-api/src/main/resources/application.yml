@@ -2,6 +2,9 @@ server:
   port: 7070
 
 spring:
+  servlet:
+    multipart:
+      enabled: true
   data:
     mongodb:
       #      commented for embedded mongo

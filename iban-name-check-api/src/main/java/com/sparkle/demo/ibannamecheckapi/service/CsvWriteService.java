@@ -13,6 +13,7 @@ import reactor.core.scheduler.Schedulers;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -22,7 +23,7 @@ public class CsvWriteService {
         final CSVFormat format = CSVFormat
                 .RFC4180
                 .withQuoteMode(QuoteMode.ALL)
-                .withHeader("Iban", "Naam", "Resultaat", "Info", "Naam Suggestie", "Status", "AccountHolderType")
+                .withHeader("IBAN", "NAME", "TRANSACTION_ID", "MATCHING_RESULT", "ACCOUNT_STATUS", "ACCOUNT_HOLDER_TYPE", "SWITCHING_SERVICE_STATUS", "SWITCHED_TO_IBAN", "MESSAGE")
                 .builder()
                 .build();
 
@@ -37,11 +38,14 @@ public class CsvWriteService {
                             csvPrinter.printRecord(
                                 response.getResult().getAccount().getIban(),
                                 response.getResult().getAccountHolderName(),
+                                UUID.randomUUID().toString(),
                                 response.getResult().getResultType().name(),
-                                "Info",
-                                response.getResult().getSuggestedName(),
                                 response.getResult().getAccount().getStatus().name(),
-                                response.getResult().getAccount().getAccountHolderType().name());
+                                response.getResult().getAccount().getAccountHolderType().name(),
+                                "ACTIVE",
+                                response.getResult().getAccount().getIban(),
+                                "error message : error code : sure pay error 001"
+                                );
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

@@ -1,11 +1,15 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.web.model.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @Data
-public class IbanNameModel {
+@NoArgsConstructor
+@AllArgsConstructor(staticName = "create")
+public class FirstRequest {
     private String counterPartyAccount;
     private String counterPartyName;
     private UUID transactionId;

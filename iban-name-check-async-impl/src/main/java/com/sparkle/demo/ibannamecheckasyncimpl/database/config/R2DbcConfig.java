@@ -38,9 +38,9 @@ public class R2DbcConfig {
     public CommandLineRunner demo(IbanNameRepository repository) {
 
         Flux<IbanNameEntity> ibanNameEntityFlux = Flux.just(
-                new IbanNameEntity(UUID.randomUUID(), "Jack 1", "IBAN RABO 1"),
-                new IbanNameEntity(UUID.randomUUID(),"Jack 2", "IBAN AMRO 1"),
-                new IbanNameEntity(UUID.randomUUID(),"Jack 3", "IBAN ABN 1")
+                new IbanNameEntity(UUID.randomUUID(), UUID.randomUUID(), "Jack 1", "IBAN RABO 1"),
+                new IbanNameEntity(UUID.randomUUID(), UUID.randomUUID(),"Jack 2", "IBAN AMRO 1"),
+                new IbanNameEntity(UUID.randomUUID(), UUID.randomUUID(),"Jack 3", "IBAN ABN 1")
         );
 
         return (args) ->

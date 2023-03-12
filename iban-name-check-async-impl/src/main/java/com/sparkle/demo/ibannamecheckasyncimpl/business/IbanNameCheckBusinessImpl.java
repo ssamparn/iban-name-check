@@ -4,6 +4,8 @@ import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameCheckResp
 import com.sparkle.demo.ibannamecheckasyncimpl.service.excel.ExcelFileService;
 import com.sparkle.demo.ibannamecheckasyncimpl.service.pain.PainFileService;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.IbanNameModel;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.TaskIdResponse;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.TaskStatusResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
@@ -21,20 +23,25 @@ public class IbanNameCheckBusinessImpl {
     private final PainFileService painFileService;
     private final ExcelFileService excelFileService;
 
-    public Mono<ByteArrayInputStream> uploadPainFile(Mono<FilePart> filePartMono, UUID correlationId) {
-        return this.painFileService.processPainFile(filePartMono, correlationId);
+    public Mono<TaskIdResponse> uploadPainFile(Mono<FilePart> filePartMono, UUID requestId) {
+        return this.painFileService.processPainFile(filePartMono, requestId);
     }
 
-    public Mono<ByteArrayInputStream> uploadExcelFileAsMono(Mono<FilePart> filePartMono) {
-        return excelFileService.processExcelFileAsMono(filePartMono);
+    public Mono<ByteArrayInputStream> uploadExcelFile(Mono<FilePart> filePartMono, UUID requestId) {
+        return this.excelFileService.processExcelFile(filePartMono, requestId);
     }
 
-    public Flux<List<IbanNameModel>> uploadExcelFileAsFlux(Flux<FilePart> filePartFlux) {
-        return excelFileService.processExcelFileAsFlux(filePartFlux);
+    public Flux<TaskStatusResponse> checkUploadStatus(UUID taskId) {
+        return this.painFileService.checkTaskStatus(taskId);
     }
 
-    public Mono<String> getRealMimeType(Mono<FilePart> filePartMono) {
-        return painFileService.getMimeType(filePartMono);
+    public Mono<ByteArrayInputStream> downloadTask(Mono<FilePart> filePartMono, UUID taskId) {
+        return this.painFileService.processCsvDownload(filePartMono, taskId);
+    }
+
+    // experimental feature
+    public Flux<List<IbanNameModel>> multiUploadExcelFile(Flux<FilePart> filePartFlux) {
+        return this.excelFileService.processMultipleExcelFile(filePartFlux);
     }
 
     public Flux<IbanNameCheckResponseEntity> downloadStatus(String correlationId) {
