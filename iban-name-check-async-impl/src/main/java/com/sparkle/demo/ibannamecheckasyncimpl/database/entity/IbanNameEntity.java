@@ -13,6 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class IbanNameEntity {
 
+    private UUID transactionId;
     private UUID correlationId;
     private String counterPartyName;
     private String counterPartyAccount;

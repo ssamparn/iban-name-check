@@ -1,9 +1,12 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.service.pain;
 
+import com.sparkle.demo.ibannamecheckasyncimpl.client.IbanNameCheckCsvClient;
 import com.sparkle.demo.ibannamecheckasyncimpl.client.IbanNameCheckJsonClient;
 import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameCheckResponseEntity;
 import com.sparkle.demo.ibannamecheckasyncimpl.database.repository.IbanNameCheckResponseRepository;
-import com.sparkle.demo.ibannamecheckasyncimpl.web.util.FileUtil;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.TaskIdResponse;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.TaskStatusResponse;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.service.CsvWriteService;
 import com.sparkle.demo.ibannamecheckasyncimpl.mapper.EntityMapper;
 import com.sparkle.demo.ibannamecheckasyncimpl.mapper.JsonObjectMapper;
 import com.sparkle.demo.ibannamecheckasyncimpl.database.repository.IbanNameRepository;
@@ -28,36 +31,52 @@ public class PainFileService {
 
     private final FileMapper fileMapper;
     private final JsonObjectMapper jsonMapper;
-    private final FileUtil fileUtil;
-    private final IbanNameCheckJsonClient ibanNameCheckClient;
+    private final IbanNameCheckJsonClient ibanNameCheckJsonClient;
+    private final IbanNameCheckCsvClient ibanNameCheckCsvClient;
     private final ExcelWriteService excelWriteService;
+    private final CsvWriteService csvWriteService;
     private final EntityMapper entityMapper;
     private final IbanNameRepository ibanNameRepository;
     private final IbanNameCheckResponseRepository ibanNameCheckResponseRepository;
 
-    public Mono<ByteArrayInputStream> processPainFile(Mono<FilePart> filePart, UUID correlationId) {
+    public Mono<TaskIdResponse> processPainFile(Mono<FilePart> filePart, UUID requestId) {
         return filePart
                 .map(fileMapper::getFilePartRequestAsInputStream)
                 .map(inputStream -> (PipedInputStream) inputStream)
                 .flatMap(fileMapper::readContentFromPipedInputStream)
                 .flatMap(fileMapper::mapToRootDocument)
-                .map(document -> entityMapper.mapToIbanNameEntity(correlationId, document))
+                .map(document -> entityMapper.mapToIbanNameEntity(requestId, document))
                 .map(ibanNameRepository::saveAll)
-                .flatMap(jsonMapper::toIbanNameCheckRequest)
-                .flatMap(ibanNameCheckClient::doPost)
-                .map(response -> entityMapper.mapToIbanNameCheckResponseEntity(correlationId, response))
+                .flatMap(jsonMapper::toTaskIdRequest)
+                .flatMap(csvWriteService::createFirstCsvRequest)
+                .flatMap(csvStream -> ibanNameCheckCsvClient.uploadCsvFile(csvStream, requestId));
+    }
+
+    public Flux<TaskStatusResponse> checkTaskStatus(UUID taskId) {
+        return ibanNameCheckJsonClient.getUpdatedTaskStatus(taskId);
+    }
+
+    public Mono<ByteArrayInputStream> processCsvDownload(Mono<FilePart> filePart, UUID taskId) {
+        return filePart
+                .map(fileMapper::getFilePartRequestAsInputStream)
+                .map(inputStream -> (PipedInputStream) inputStream)
+                .flatMap(fileMapper::readContentFromPipedInputStream)
+                .flatMap(fileMapper::mapToRootDocument)
+                .map(document -> entityMapper.mapToIbanNameEntity(taskId, document))
+                .map(ibanNameRepository::saveAll)
+                .flatMap(jsonMapper::mapToIbanNameModel)
+                .flatMap(csvWriteService::createCsvRequest)
+                .map(requestStream -> ibanNameCheckCsvClient.downloadCsvFile(taskId, requestStream))
+                .map(fileMapper::getDataBufferAsInputStream)
+                .map(jsonMapper::toCsvDownloadableResource)
+                .map(response -> entityMapper.mapToIbanNameCheckResponseEntity(taskId, response))
                 .map(ibanNameCheckResponseRepository::saveAll)
-                .map(jsonMapper::mapToIbanNameCheckData)
+                .map(jsonMapper::toExcelWritableResource)
                 .flatMap(excelWriteService::writeToExcel)
                 .subscribeOn(Schedulers.boundedElastic());
     }
 
-    public Mono<String> getMimeType(Mono<FilePart> filePart) {
-        return filePart
-                .map(fileMapper::getFilePartRequestAsInputStream)
-                .flatMap(fileUtil::getRealMimeType);
-    }
-
+    // experimental feature
     public Flux<IbanNameCheckResponseEntity> downloadUpdatedStatus(String correlationId) {
         return ibanNameCheckResponseRepository.getAllByCorrelationId(UUID.fromString(correlationId));
     }

@@ -22,6 +22,7 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -114,7 +115,7 @@ public class FileMapper {
         return String.valueOf(contentStringBuffer);
     }
 
-    public List<IbanNameModel> excelToIbanNameModel(InputStream inputStream) {
+    public List<IbanNameModel> excelToIbanNameModel(UUID requestId, InputStream inputStream) {
         List<IbanNameModel> ibanNameModelList = new ArrayList<>();
         try {
             XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
@@ -125,6 +126,7 @@ public class FileMapper {
 
                 ibanNameModel.setCounterPartyAccount(row.getCell(0).getStringCellValue().trim());
                 ibanNameModel.setCounterPartyName(row.getCell(1).getStringCellValue().trim());
+                ibanNameModel.setTransactionId(UUID.randomUUID());
                 ibanNameModelList.add(ibanNameModel);
             }
             workbook.close();

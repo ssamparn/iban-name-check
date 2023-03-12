@@ -79,11 +79,11 @@ public class ExcelWriteService {
 
                     Cell infoCell = ibanNameRow.createCell(4);
                     infoCell.setCellStyle(cellStyle);
-                    infoCell.setCellValue(nameCheckData.getInfo());
+                    infoCell.setCellValue(nameCheckData.getSwitchedToIban());
 
                     Cell suggestedNameCell = ibanNameRow.createCell(5);
                     suggestedNameCell.setCellStyle(cellStyle);
-                    suggestedNameCell.setCellValue(nameCheckData.getSuggestedName());
+                    suggestedNameCell.setCellValue(nameCheckData.getSwitchingServiceStatus());
 
                     Cell statusCell = ibanNameRow.createCell(6);
                     statusCell.setCellStyle(cellStyle);

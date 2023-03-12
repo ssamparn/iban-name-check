@@ -3,6 +3,9 @@ package com.sparkle.demo.ibannamecheckasyncimpl.mapper;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameCheckResponseEntity;
 import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameEntity;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.FirstRequest;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.IbanNameModel;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.TaskIdRequest;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.FinalResult;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.FinalStatus;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.IbanNameCheckData;
@@ -24,7 +27,49 @@ import java.util.stream.Collectors;
 @Service
 public class JsonObjectMapper {
 
-    public Mono<IbanNameCheckRequest> toIbanNameCheckRequest(Flux<IbanNameEntity> ibanNameCheckEntityFlux) {
+    public Mono<TaskIdRequest> toTaskIdRequest(Flux<IbanNameEntity> ibanNameCheckEntityFlux) {
+        return ibanNameCheckEntityFlux.collectList()
+                .map(this::mapToTaskIdRequest);
+    }
+
+    private TaskIdRequest mapToTaskIdRequest(List<IbanNameEntity> ibanNameEntities) {
+        TaskIdRequest taskIdRequest = new TaskIdRequest();
+        List<FirstRequest> batchRequest = this.mapToFirstRequest(ibanNameEntities);
+        taskIdRequest.setFirstRequestList(batchRequest);
+
+        return taskIdRequest;
+    }
+
+    private List<FirstRequest> mapToFirstRequest(List<IbanNameEntity> ibanNameEntities) {
+        return ibanNameEntities
+                .stream()
+                .map(entity -> {
+                    FirstRequest request = new FirstRequest();
+                    request.setCounterPartyAccount(entity.getCounterPartyAccount());
+                    request.setCounterPartyName(entity.getCounterPartyName());
+                    request.setTransactionId(entity.getTransactionId());
+
+                    return request;
+                }).toList();
+    }
+
+    public Mono<List<IbanNameModel>> mapToIbanNameModel(Flux<IbanNameEntity> ibanNameEntityFlux) {
+        return ibanNameEntityFlux.collectList()
+                .map(this::mapToIbanNameModelList);
+    }
+
+    private List<IbanNameModel> mapToIbanNameModelList(List<IbanNameEntity> ibanNameEntities) {
+        return ibanNameEntities.stream()
+                .map(entity -> {
+                    IbanNameModel model = new IbanNameModel();
+                    model.setTransactionId(entity.getTransactionId());
+                    model.setCounterPartyAccount(entity.getCounterPartyAccount());
+                    model.setCounterPartyName(entity.getCounterPartyName());
+                    return model;
+                }).collect(Collectors.toList());
+    }
+
+    public Mono<IbanNameCheckRequest> toSurePayJsonRequest(Flux<IbanNameEntity> ibanNameCheckEntityFlux) {
         return ibanNameCheckEntityFlux.collectList()
                 .map(this::mapToSurePayRequest);
     }
@@ -50,19 +95,19 @@ public class JsonObjectMapper {
                 }).toList();
     }
 
-    public List<IbanNameCheckData> toBulkResponse(InputStream inputStream) {
+    public List<IbanNameCheckData> toCsvDownloadableResource(InputStream inputStream) {
 
         List<IbanNameCheckData> ibanNameCheckData = new CsvToBeanBuilder<IbanNameCheckData>(new InputStreamReader(inputStream))
                 .withType(IbanNameCheckData.class)
                 .build()
                 .parse();
 
-        ibanNameCheckData.forEach(data -> log.info("ibanNameCheckData after parsed from CSV : {}", data));
+        ibanNameCheckData.forEach(data -> log.info("sure pay response after parsed from CSV : {}", data));
 
         return ibanNameCheckData;
     }
 
-    public List<IbanNameCheckData> mapToIbanNameCheckData(Flux<IbanNameCheckResponseEntity> ibanNameCheckResponseEntityFlux) {
+    public List<IbanNameCheckData> toExcelWritableResource(Flux<IbanNameCheckResponseEntity> ibanNameCheckResponseEntityFlux) {
         List<IbanNameCheckResponseEntity> ibanNameCheckResponseEntities = new ArrayList<>();
 
         ibanNameCheckResponseEntityFlux.collectList()
@@ -75,10 +120,8 @@ public class JsonObjectMapper {
                     IbanNameCheckData data = new IbanNameCheckData();
                     data.setCounterPartyAccount(entity.getCounterPartyAccount());
                     data.setCounterPartyName(entity.getCounterPartyName());
-                    data.setFinalResult(FinalResult.valueOf(entity.getFinalResult()));
-                    data.setInfo(entity.getInfo());
-                    data.setSuggestedName(entity.getSuggestedName());
-                    data.setStatus(FinalStatus.valueOf(entity.getStatus()));
+                    data.setFinalResult(FinalResult.valueOf(entity.getMatchingResult()));
+                    data.setStatus(FinalStatus.valueOf(entity.getAccountStatus()));
                     data.setAccountHolderType(entity.getAccountHolderType());
 
                     return data;

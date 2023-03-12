@@ -1,6 +1,9 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.service.excel;
 
 import com.sparkle.demo.ibannamecheckasyncimpl.client.IbanNameCheckCsvClient;
+import com.sparkle.demo.ibannamecheckasyncimpl.database.repository.IbanNameCheckResponseRepository;
+import com.sparkle.demo.ibannamecheckasyncimpl.database.repository.IbanNameRepository;
+import com.sparkle.demo.ibannamecheckasyncimpl.mapper.EntityMapper;
 import com.sparkle.demo.ibannamecheckasyncimpl.mapper.FileMapper;
 import com.sparkle.demo.ibannamecheckasyncimpl.mapper.JsonObjectMapper;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.IbanNameModel;
@@ -16,6 +19,7 @@ import reactor.core.scheduler.Schedulers;
 
 import java.io.ByteArrayInputStream;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -23,27 +27,37 @@ import java.util.List;
 public class ExcelFileService {
 
     private final FileMapper fileMapper;
-    private final JsonObjectMapper jsonObjectMapper;
+    private final JsonObjectMapper jsonMapper;
+    private final EntityMapper entityMapper;
     private final IbanNameCheckCsvClient ibanNameCheckClient;
+    private final IbanNameRepository ibanNameRepository;
+    private final IbanNameCheckResponseRepository ibanNameCheckResponseRepository;
     private final CsvWriteService csvWriteService;
     private final ExcelWriteService excelWriteService;
 
-    public Mono<ByteArrayInputStream> processExcelFileAsMono(Mono<FilePart> filePartMono) {
+    public Mono<ByteArrayInputStream> processExcelFile(Mono<FilePart> filePartMono, UUID requestId) {
         return filePartMono
             .map(fileMapper::getFilePartRequestAsInputStream)
-            .map(fileMapper::excelToIbanNameModel)
+            .map(inputStream -> fileMapper.excelToIbanNameModel(requestId, inputStream))
+            .map(ibanNameModel -> entityMapper.mapToIbanNameEntity(requestId, ibanNameModel))
+            .map(ibanNameRepository::saveAll)
+            .flatMap(jsonMapper::mapToIbanNameModel)
             .flatMap(csvWriteService::createCsvRequest)
-            .map(ibanNameCheckClient::doPost)
+            .map(requestStream -> ibanNameCheckClient.downloadCsvFile(requestId, requestStream))
             .map(fileMapper::getDataBufferAsInputStream)
-            .map(jsonObjectMapper::toBulkResponse)
+            .map(jsonMapper::toCsvDownloadableResource)
+            .map(response -> entityMapper.mapToIbanNameCheckResponseEntity(requestId, response))
+            .map(ibanNameCheckResponseRepository::saveAll)
+            .map(jsonMapper::toExcelWritableResource)
             .flatMap(excelWriteService::writeToExcel)
             .subscribeOn(Schedulers.boundedElastic());
     }
 
-    public Flux<List<IbanNameModel>> processExcelFileAsFlux(Flux<FilePart> filePartFlux) {
+    // experimental feature
+    public Flux<List<IbanNameModel>> processMultipleExcelFile(Flux<FilePart> filePartFlux) {
         return filePartFlux
                 .map(fileMapper::getFilePartRequestAsInputStream)
-                .map(fileMapper::excelToIbanNameModel)
+                .map(inputStream -> fileMapper.excelToIbanNameModel(UUID.randomUUID(), inputStream))
                 .subscribeOn(Schedulers.boundedElastic());
     }
 }

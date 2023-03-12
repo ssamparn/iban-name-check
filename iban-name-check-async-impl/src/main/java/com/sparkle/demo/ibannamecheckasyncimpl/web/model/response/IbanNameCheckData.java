@@ -6,24 +6,30 @@ import lombok.Data;
 @Data
 public class IbanNameCheckData {
 
-    @CsvBindByName(column = "Iban")
+    @CsvBindByName(column = "IBAN")
     private String counterPartyAccount;
 
-    @CsvBindByName(column = "Naam")
+    @CsvBindByName(column = "NAME")
     private String counterPartyName;
 
-    @CsvBindByName(column = "Resultaat")
+    @CsvBindByName(column = "TRANSACTION_ID")
+    private String transactionId;
+
+    @CsvBindByName(column = "MATCHING_RESULT")
     private FinalResult finalResult;
 
-    @CsvBindByName(column = "Info")
-    private String info;
-
-    @CsvBindByName(column = "Naam Suggestie")
-    private String suggestedName;
-
-    @CsvBindByName(column = "Status")
+    @CsvBindByName(column = "ACCOUNT_STATUS")
     private FinalStatus status;
 
-    @CsvBindByName(column = "AccountHolderType")
+    @CsvBindByName(column = "ACCOUNT_HOLDER_TYPE")
     private String accountHolderType;
+
+    @CsvBindByName(column = "SWITCHING_SERVICE_STATUS")
+    private String switchingServiceStatus;
+
+    @CsvBindByName(column = "SWITCHED_TO_IBAN")
+    private String switchedToIban;
+
+    @CsvBindByName(column = "MESSAGE")
+    private String message;
 }

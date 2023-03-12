@@ -3,6 +3,8 @@ package com.sparkle.demo.ibannamecheckasyncimpl.web.controller;
 import com.sparkle.demo.ibannamecheckasyncimpl.business.IbanNameCheckBusinessImpl;
 import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameCheckResponseEntity;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.IbanNameModel;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.TaskIdResponse;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.TaskStatusResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
@@ -33,22 +35,46 @@ public class IbanNameCheckAsyncController {
 
     private final IbanNameCheckBusinessImpl ibanNameCheckBusiness;
 
-    @PostMapping(value = "/upload-pain-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<ResponseEntity<Resource>> uploadPainFile(@RequestPart("fileToUpload") Mono<FilePart> filePartMono) {
-        final UUID correlationId = UUID.randomUUID();
-        return this.ibanNameCheckBusiness.uploadPainFile(filePartMono, correlationId)
-                .map(InputStreamResource::new)
-                .map(inputStreamResource -> ResponseEntity.ok().headers(excelResponseHeaders(correlationId.toString())).body(inputStreamResource));
+    @PostMapping(value = "/ancs-upload-pain", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Mono<ResponseEntity<TaskIdResponse>> uploadPain(@RequestPart("fileToUpload") Mono<FilePart> filePartMono) {
+        log.info("requesting upload endpoint of ancs");
+        final UUID requestId = UUID.randomUUID();
+        return this.ibanNameCheckBusiness.uploadPainFile(filePartMono, requestId)
+                .map(response -> ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(response)
+                );
     }
 
-    @PostMapping(value = "/upload-excel-file-mono", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<ResponseEntity<Resource>> uploadExcelFileMono(@RequestPart("fileToUpload") Mono<FilePart> filePartMono) {
+    @PostMapping(value = "/ancs-upload-excel", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Mono<ResponseEntity<Resource>> uploadExcel(@RequestPart("fileToUpload") Mono<FilePart> filePartMono) {
         final UUID correlationId = UUID.randomUUID();
-        return this.ibanNameCheckBusiness.uploadExcelFileAsMono(filePartMono)
+        return this.ibanNameCheckBusiness.uploadExcelFile(filePartMono, correlationId)
                 .map(InputStreamResource::new)
-                .map(inputStreamResource -> ResponseEntity.ok().headers(excelResponseHeaders(correlationId.toString())).body(inputStreamResource));
+                .map(inputStreamResource -> ResponseEntity.ok()
+                        .headers(excelResponseHeaders(correlationId.toString()))
+                        .body(inputStreamResource)
+                );
     }
 
+    @GetMapping(value = "/ancs-upload/{taskId}/status", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<TaskStatusResponse> checkTaskStatus(@PathVariable("taskId") UUID taskId) {
+        log.info("requesting task status check endpoint of ancs");
+        return ibanNameCheckBusiness.checkUploadStatus(taskId);
+    }
+
+    @PostMapping(value = "/ancs-download/{taskId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Mono<ResponseEntity<Resource>> download(@RequestPart("fileToUpload") Mono<FilePart> filePartMono,
+                                                       @PathVariable("taskId") UUID taskId) {
+        log.info("requesting download csv endpoint of ancs");
+        return this.ibanNameCheckBusiness.downloadTask(filePartMono, taskId)
+                .map(InputStreamResource::new)
+                .map(inputStreamResource -> ResponseEntity.ok()
+                        .headers(excelResponseHeaders(taskId.toString()))
+                        .body(inputStreamResource));
+    }
+
+    // experimental feature
     @GetMapping(value = "/get-updated-status/{correlationId}")
     public Mono<ResponseEntity<List<IbanNameCheckResponseEntity>>> getUpdatedStatus(@PathVariable("correlationId") String correlationId) {
         return this.ibanNameCheckBusiness.downloadStatus(correlationId)
@@ -58,11 +84,6 @@ public class IbanNameCheckAsyncController {
 
     @PostMapping(value = "/upload-excel-file-flux", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Flux<List<IbanNameModel>> uploadExcelFileFlux(@RequestPart("fileToUpload") Flux<FilePart> filePartFlux) {
-        return this.ibanNameCheckBusiness.uploadExcelFileAsFlux(filePartFlux);
-    }
-
-    @PostMapping(value = "/get-mime-type", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<String> getMimeType(@RequestPart("fileToUpload") Mono<FilePart> filePartMono) {
-        return this.ibanNameCheckBusiness.getRealMimeType(filePartMono);
+        return this.ibanNameCheckBusiness.multiUploadExcelFile(filePartFlux);
     }
 }

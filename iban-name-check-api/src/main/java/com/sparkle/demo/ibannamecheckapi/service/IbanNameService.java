@@ -6,6 +6,9 @@ import com.sparkle.demo.ibannamecheckapi.web.model.request.AccountId;
 import com.sparkle.demo.ibannamecheckapi.web.model.request.BulkJsonRequest;
 import com.sparkle.demo.ibannamecheckapi.web.model.request.IbanAccountCheckRequest;
 import com.sparkle.demo.ibannamecheckapi.web.model.response.IbanAccountCheckResponse;
+import com.sparkle.demo.ibannamecheckapi.web.model.response.TaskIdResponse;
+import com.sparkle.demo.ibannamecheckapi.web.model.response.TaskStatus;
+import com.sparkle.demo.ibannamecheckapi.web.model.response.TaskStatusResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.codec.multipart.FilePart;
@@ -16,6 +19,7 @@ import reactor.core.scheduler.Schedulers;
 import java.io.ByteArrayInputStream;
 import java.io.PipedInputStream;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -79,5 +83,19 @@ public class IbanNameService {
                     return jsonRequest;
                 }).toList();
         return jsonRequests;
+    }
+
+    public Mono<TaskIdResponse> createTaskIdResponse(Mono<FilePart> filePartMono, UUID xRequestId) {
+        return Mono.just(TaskIdResponse.builder()
+                .xRequestId(xRequestId)
+                .taskId(UUID.randomUUID())
+                .build());
+    }
+
+    public List<TaskStatusResponse> createTaskStatusResponse(Long seconds) {
+        TaskStatusResponse statusResponse = new TaskStatusResponse();
+        statusResponse.setTaskStatus(TaskStatus.randomStatus());
+
+        return List.of(statusResponse);
     }
 }
