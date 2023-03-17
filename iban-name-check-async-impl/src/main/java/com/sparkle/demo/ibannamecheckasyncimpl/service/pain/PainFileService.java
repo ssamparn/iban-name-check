@@ -4,7 +4,7 @@ import com.sparkle.demo.ibannamecheckasyncimpl.client.IbanNameCheckCsvClient;
 import com.sparkle.demo.ibannamecheckasyncimpl.client.IbanNameCheckJsonClient;
 import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameCheckResponseEntity;
 import com.sparkle.demo.ibannamecheckasyncimpl.database.repository.IbanNameCheckResponseRepository;
-import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.TaskIdResponse;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.TaskResponse;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.TaskStatusResponse;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.service.CsvWriteService;
 import com.sparkle.demo.ibannamecheckasyncimpl.mapper.EntityMapper;
@@ -39,7 +39,7 @@ public class PainFileService {
     private final IbanNameRepository ibanNameRepository;
     private final IbanNameCheckResponseRepository ibanNameCheckResponseRepository;
 
-    public Mono<TaskIdResponse> processPainFile(Mono<FilePart> filePart, UUID requestId) {
+    public Mono<TaskResponse> processPainFile(Mono<FilePart> filePart, UUID requestId) {
         return filePart
                 .map(fileMapper::getFilePartRequestAsInputStream)
                 .map(inputStream -> (PipedInputStream) inputStream)

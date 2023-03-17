@@ -1,6 +1,6 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.client;
 
-import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.TaskIdResponse;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.TaskResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,7 +38,7 @@ public class IbanNameCheckCsvClient {
         this.surePayClient = surePayClient;
     }
 
-    public Mono<TaskIdResponse> uploadCsvFile(ByteArrayInputStream byteArrayInputStream, UUID requestId) {
+    public Mono<TaskResponse> uploadCsvFile(ByteArrayInputStream byteArrayInputStream, UUID requestId) {
         MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
         multipartBodyBuilder.part("csv", new InputStreamResource(byteArrayInputStream))
                 .contentType(MediaType.MULTIPART_FORM_DATA);
@@ -52,7 +52,7 @@ public class IbanNameCheckCsvClient {
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.error(new RuntimeException("Client Error")))
                 .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new RuntimeException("Server Error")))
-                .bodyToMono(TaskIdResponse.class);
+                .bodyToMono(TaskResponse.class);
     }
 
     public Flux<DataBuffer> downloadCsvFile(UUID taskId, ByteArrayInputStream byteArrayInputStream) {

@@ -3,7 +3,7 @@ package com.sparkle.demo.ibannamecheckasyncimpl.web.controller;
 import com.sparkle.demo.ibannamecheckasyncimpl.business.IbanNameCheckBusinessImpl;
 import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameCheckResponseEntity;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.IbanNameModel;
-import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.TaskIdResponse;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.TaskResponse;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.TaskStatusResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ public class IbanNameCheckAsyncController {
     private final IbanNameCheckBusinessImpl ibanNameCheckBusiness;
 
     @PostMapping(value = "/ancs-upload-pain", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<ResponseEntity<TaskIdResponse>> uploadPain(@RequestPart("fileToUpload") Mono<FilePart> filePartMono) {
+    public Mono<ResponseEntity<TaskResponse>> uploadPain(@RequestPart("fileToUpload") Mono<FilePart> filePartMono) {
         log.info("requesting upload endpoint of ancs");
         final UUID requestId = UUID.randomUUID();
         return this.ibanNameCheckBusiness.uploadPainFile(filePartMono, requestId)

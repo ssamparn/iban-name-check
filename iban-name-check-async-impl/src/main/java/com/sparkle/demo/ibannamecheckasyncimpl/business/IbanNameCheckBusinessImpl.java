@@ -4,7 +4,7 @@ import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameCheckResp
 import com.sparkle.demo.ibannamecheckasyncimpl.service.excel.ExcelFileService;
 import com.sparkle.demo.ibannamecheckasyncimpl.service.pain.PainFileService;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.IbanNameModel;
-import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.TaskIdResponse;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.TaskResponse;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.TaskStatusResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.codec.multipart.FilePart;
@@ -23,7 +23,7 @@ public class IbanNameCheckBusinessImpl {
     private final PainFileService painFileService;
     private final ExcelFileService excelFileService;
 
-    public Mono<TaskIdResponse> uploadPainFile(Mono<FilePart> filePartMono, UUID requestId) {
+    public Mono<TaskResponse> uploadPainFile(Mono<FilePart> filePartMono, UUID requestId) {
         return this.painFileService.processPainFile(filePartMono, requestId);
     }
 

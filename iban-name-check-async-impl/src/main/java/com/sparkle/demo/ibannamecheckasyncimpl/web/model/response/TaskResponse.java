@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TaskIdResponse implements Serializable {
+public class TaskResponse implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 507825619827627L;
