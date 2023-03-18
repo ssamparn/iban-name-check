@@ -23,7 +23,8 @@ public class IbanNameCheckBusinessImpl {
     private final PainFileService painFileService;
     private final ExcelFileService excelFileService;
 
-    public Mono<TaskResponse> uploadPainFile(Mono<FilePart> filePartMono, UUID requestId) {
+    public Mono<TaskResponse> uploadPainFile(Mono<FilePart> filePartMono) {
+        final UUID requestId = UUID.randomUUID();
         return this.painFileService.processPainFile(filePartMono, requestId);
     }
 

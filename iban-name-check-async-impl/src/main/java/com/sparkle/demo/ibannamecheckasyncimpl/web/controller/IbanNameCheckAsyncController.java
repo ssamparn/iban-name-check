@@ -38,8 +38,7 @@ public class IbanNameCheckAsyncController {
     @PostMapping(value = "/ancs-upload-pain", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Mono<ResponseEntity<TaskResponse>> uploadPain(@RequestPart("fileToUpload") Mono<FilePart> filePartMono) {
         log.info("requesting upload endpoint of ancs");
-        final UUID requestId = UUID.randomUUID();
-        return this.ibanNameCheckBusiness.uploadPainFile(filePartMono, requestId)
+        return this.ibanNameCheckBusiness.uploadPainFile(filePartMono)
                 .map(response -> ResponseEntity.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(response)
