@@ -1,6 +1,6 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.web.service;
 
-import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.IbanNameCheckData;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.AccountNameCheckData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
@@ -29,7 +29,7 @@ public class ExcelWriteService {
 
     private static final String[] SECOND_ROW_HEADERS = { "Iban", "Naam", " ", "Resultaat", "Info*", "NaamSuggestie", "Status", "AccountHolderType" };
 
-    public Mono<ByteArrayInputStream> writeToExcel(List<IbanNameCheckData> ibanNames) {
+    public Mono<ByteArrayInputStream> writeToExcel(List<AccountNameCheckData> ibanNames) {
 
         return Mono.fromCallable(() -> {
 
@@ -62,7 +62,7 @@ public class ExcelWriteService {
 
                 //Set data
                 int rowNum = 2;
-                for (IbanNameCheckData nameCheckData : ibanNames) {
+                for (AccountNameCheckData nameCheckData : ibanNames) {
                     log.info("Writing data to excel");
                     Row ibanNameRow = sheet.createRow(rowNum++);
                     Cell counterPartyAccountNumCell = ibanNameRow.createCell(0);

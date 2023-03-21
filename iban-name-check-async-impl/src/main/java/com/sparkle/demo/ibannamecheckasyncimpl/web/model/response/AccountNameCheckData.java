@@ -4,7 +4,7 @@ import com.opencsv.bean.CsvBindByName;
 import lombok.Data;
 
 @Data
-public class IbanNameCheckData {
+public class AccountNameCheckData {
 
     @CsvBindByName(column = "IBAN")
     private String counterPartyAccount;

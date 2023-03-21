@@ -4,7 +4,7 @@ import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameCheckResp
 import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameEntity;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.IbanNameModel;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.FinalStatus;
-import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.IbanNameCheckData;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.AccountNameCheckData;
 import com.sparkle.demo.ibannamecheckcommon.model.ct.request.Document;
 import com.sparkle.demo.ibannamecheckcommon.model.ct.request.PaymentInformation;
 import com.sparkle.demo.ibannamecheckcommon.model.surepay.response.IbanNameCheckResponse;
@@ -45,7 +45,7 @@ public class EntityMapper {
                 }).toList();
     }
 
-    public List<IbanNameCheckResponseEntity> mapToIbanNameCheckResponseEntity(UUID correlationId, List<IbanNameCheckData> surePayResponse) {
+    public List<IbanNameCheckResponseEntity> mapToIbanNameCheckResponseEntity(UUID correlationId, List<AccountNameCheckData> surePayResponse) {
         List<IbanNameCheckResponseEntity> ibanNameCheckResponseEntities =  surePayResponse.stream()
                 .map(response -> {
                     IbanNameCheckResponseEntity entity = new IbanNameCheckResponseEntity();

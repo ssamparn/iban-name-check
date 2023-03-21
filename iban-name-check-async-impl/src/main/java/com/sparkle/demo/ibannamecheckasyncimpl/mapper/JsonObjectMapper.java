@@ -6,9 +6,9 @@ import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameEntity;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.FirstRequest;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.IbanNameModel;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.TaskIdRequest;
+import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.AccountNameCheckData;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.FinalResult;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.FinalStatus;
-import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.IbanNameCheckData;
 import com.sparkle.demo.ibannamecheckcommon.model.surepay.request.AccountId;
 import com.sparkle.demo.ibannamecheckcommon.model.surepay.request.BulkRequest;
 import com.sparkle.demo.ibannamecheckcommon.model.surepay.request.IbanNameCheckRequest;
@@ -95,19 +95,19 @@ public class JsonObjectMapper {
                 }).toList();
     }
 
-    public List<IbanNameCheckData> toCsvDownloadableResource(InputStream inputStream) {
+    public List<AccountNameCheckData> toCsvDownloadableResource(InputStream inputStream) {
 
-        List<IbanNameCheckData> ibanNameCheckData = new CsvToBeanBuilder<IbanNameCheckData>(new InputStreamReader(inputStream))
-                .withType(IbanNameCheckData.class)
+        List<AccountNameCheckData> accountNameCheckData = new CsvToBeanBuilder<AccountNameCheckData>(new InputStreamReader(inputStream))
+                .withType(AccountNameCheckData.class)
                 .build()
                 .parse();
 
-        ibanNameCheckData.forEach(data -> log.info("sure pay response after parsed from CSV : {}", data));
+        accountNameCheckData.forEach(data -> log.info("sure pay response after parsed from CSV : {}", data));
 
-        return ibanNameCheckData;
+        return accountNameCheckData;
     }
 
-    public List<IbanNameCheckData> toExcelWritableResource(Flux<IbanNameCheckResponseEntity> ibanNameCheckResponseEntityFlux) {
+    public List<AccountNameCheckData> toExcelWritableResource(Flux<IbanNameCheckResponseEntity> ibanNameCheckResponseEntityFlux) {
         List<IbanNameCheckResponseEntity> ibanNameCheckResponseEntities = new ArrayList<>();
 
         ibanNameCheckResponseEntityFlux.collectList()
@@ -115,9 +115,9 @@ public class JsonObjectMapper {
 
         log.info("saved ibanNameCheckResponseEntities size: {}", ibanNameCheckResponseEntities.size());
 
-        List<IbanNameCheckData> ibanNameCheckData = ibanNameCheckResponseEntities.stream()
+        List<AccountNameCheckData> accountNameCheckData = ibanNameCheckResponseEntities.stream()
                 .map(entity -> {
-                    IbanNameCheckData data = new IbanNameCheckData();
+                    AccountNameCheckData data = new AccountNameCheckData();
                     data.setCounterPartyAccount(entity.getCounterPartyAccount());
                     data.setCounterPartyName(entity.getCounterPartyName());
                     data.setFinalResult(FinalResult.valueOf(entity.getMatchingResult()));
@@ -127,8 +127,8 @@ public class JsonObjectMapper {
                     return data;
                 }).collect(Collectors.toList());
 
-        log.info("ibanNameCheckData size: {}", ibanNameCheckData.size());
+        log.info("accountNameCheckData size: {}", accountNameCheckData.size());
 
-        return ibanNameCheckData;
+        return accountNameCheckData;
     }
 }
