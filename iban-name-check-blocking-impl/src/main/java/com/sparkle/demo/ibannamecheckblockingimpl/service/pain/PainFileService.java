@@ -2,7 +2,7 @@ package com.sparkle.demo.ibannamecheckblockingimpl.service.pain;
 
 import com.sparkle.demo.ibannamecheckblockingimpl.client.IbanNameCheckCsvClient;
 import com.sparkle.demo.ibannamecheckblockingimpl.client.IbanNameCheckJsonClient;
-import com.sparkle.demo.ibannamecheckblockingimpl.database.entity.IbanNameCheckResponseEntity;
+import com.sparkle.demo.ibannamecheckblockingimpl.database.entity.IbanNameResponseEntity;
 import com.sparkle.demo.ibannamecheckblockingimpl.database.repository.IbanNameCheckResponseRepository;
 import com.sparkle.demo.ibannamecheckblockingimpl.database.repository.IbanNameRepository;
 import com.sparkle.demo.ibannamecheckblockingimpl.mapper.EntityMapper;
@@ -78,7 +78,7 @@ public class PainFileService {
     }
 
     // experimental feature
-    public Flux<IbanNameCheckResponseEntity> downloadUpdatedStatus(String correlationId) {
+    public Flux<IbanNameResponseEntity> downloadUpdatedStatus(String correlationId) {
         return Flux.fromIterable(this.ibanNameCheckResponseRepository.getAllByCorrelationId(UUID.fromString(correlationId)))
                 .subscribeOn(Schedulers.boundedElastic());
     }

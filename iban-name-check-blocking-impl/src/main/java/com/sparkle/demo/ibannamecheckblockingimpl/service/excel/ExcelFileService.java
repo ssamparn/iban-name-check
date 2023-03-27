@@ -38,7 +38,7 @@ public class ExcelFileService {
     public Mono<ByteArrayInputStream> processExcelFile(Mono<FilePart> filePartMono, UUID requestId) {
         return filePartMono
             .map(fileMapper::getFilePartRequestAsInputStream)
-            .map(inputStream -> fileMapper.excelToIbanNameModel(requestId, inputStream))
+            .map(fileMapper::excelToIbanNameModel)
             .map(ibanNameModel -> entityMapper.mapToIbanNameEntity(requestId, ibanNameModel))
             .map(entities -> Mono.fromCallable(() -> this.ibanNameRepository.saveAll(entities)))
             .flatMap(jsonMapper::mapToIbanNameModel)
@@ -57,7 +57,7 @@ public class ExcelFileService {
     public Flux<List<IbanNameModel>> processMultipleExcelFile(Flux<FilePart> filePartFlux) {
         return filePartFlux
                 .map(fileMapper::getFilePartRequestAsInputStream)
-                .map(inputStream -> fileMapper.excelToIbanNameModel(UUID.randomUUID(), inputStream))
+                .map(fileMapper::excelToIbanNameModel)
                 .subscribeOn(Schedulers.boundedElastic());
     }
 }

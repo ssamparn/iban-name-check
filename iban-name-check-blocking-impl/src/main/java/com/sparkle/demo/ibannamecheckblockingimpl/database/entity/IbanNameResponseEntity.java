@@ -1,5 +1,8 @@
-package com.sparkle.demo.ibannamecheckasyncimpl.database.entity;
+package com.sparkle.demo.ibannamecheckblockingimpl.database.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,12 +14,17 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class IbanNameCheckResponseEntity {
+@Entity
+@Table(name = "iban_name_response_entity")
+public class IbanNameResponseEntity {
 
     private String counterPartyAccount;
     private UUID correlationId;
     private String counterPartyName;
+
+    @Id
     private UUID transactionId;
+
     private String matchingResult;
     private String accountStatus;
     private String accountHolderType;

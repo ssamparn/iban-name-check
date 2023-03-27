@@ -1,6 +1,6 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.business;
 
-import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameCheckResponseEntity;
+import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameResponseEntity;
 import com.sparkle.demo.ibannamecheckasyncimpl.service.excel.ExcelFileService;
 import com.sparkle.demo.ibannamecheckasyncimpl.service.pain.PainFileService;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.IbanNameModel;
@@ -45,7 +45,7 @@ public class IbanNameCheckBusinessImpl {
         return this.excelFileService.processMultipleExcelFile(filePartFlux);
     }
 
-    public Flux<IbanNameCheckResponseEntity> downloadStatus(String correlationId) {
+    public Flux<IbanNameResponseEntity> downloadStatus(String correlationId) {
         return this.painFileService.downloadUpdatedStatus(correlationId);
     }
 }

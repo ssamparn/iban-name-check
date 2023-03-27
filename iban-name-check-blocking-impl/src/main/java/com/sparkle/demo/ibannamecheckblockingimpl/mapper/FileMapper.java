@@ -116,7 +116,7 @@ public class FileMapper {
         return String.valueOf(contentStringBuffer);
     }
 
-    public List<IbanNameModel> excelToIbanNameModel(UUID requestId, InputStream inputStream) {
+    public List<IbanNameModel> excelToIbanNameModel(InputStream inputStream) {
         List<IbanNameModel> ibanNameModelList = new ArrayList<>();
         try {
             XSSFWorkbook workbook = new XSSFWorkbook(inputStream);

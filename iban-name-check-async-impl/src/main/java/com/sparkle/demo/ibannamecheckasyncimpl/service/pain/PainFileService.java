@@ -2,7 +2,7 @@ package com.sparkle.demo.ibannamecheckasyncimpl.service.pain;
 
 import com.sparkle.demo.ibannamecheckasyncimpl.client.IbanNameCheckCsvClient;
 import com.sparkle.demo.ibannamecheckasyncimpl.client.IbanNameCheckJsonClient;
-import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameCheckResponseEntity;
+import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameResponseEntity;
 import com.sparkle.demo.ibannamecheckasyncimpl.database.repository.IbanNameCheckResponseRepository;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.TaskResponse;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.TaskStatusResponse;
@@ -77,7 +77,7 @@ public class PainFileService {
     }
 
     // experimental feature
-    public Flux<IbanNameCheckResponseEntity> downloadUpdatedStatus(String correlationId) {
+    public Flux<IbanNameResponseEntity> downloadUpdatedStatus(String correlationId) {
         return ibanNameCheckResponseRepository.getAllByCorrelationId(UUID.fromString(correlationId));
     }
 }

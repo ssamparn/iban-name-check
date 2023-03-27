@@ -1,6 +1,6 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.mapper;
 
-import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameCheckResponseEntity;
+import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameResponseEntity;
 import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameEntity;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.IbanNameModel;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.response.FinalStatus;
@@ -45,10 +45,10 @@ public class EntityMapper {
                 }).toList();
     }
 
-    public List<IbanNameCheckResponseEntity> mapToIbanNameCheckResponseEntity(UUID correlationId, List<AccountNameCheckData> surePayResponse) {
-        List<IbanNameCheckResponseEntity> ibanNameCheckResponseEntities =  surePayResponse.stream()
+    public List<IbanNameResponseEntity> mapToIbanNameCheckResponseEntity(UUID correlationId, List<AccountNameCheckData> surePayResponse) {
+        List<IbanNameResponseEntity> ibanNameCheckResponseEntities =  surePayResponse.stream()
                 .map(response -> {
-                    IbanNameCheckResponseEntity entity = new IbanNameCheckResponseEntity();
+                    IbanNameResponseEntity entity = new IbanNameResponseEntity();
                     entity.setCounterPartyAccount(response.getCounterPartyAccount());
                     entity.setCorrelationId(correlationId);
                     entity.setCounterPartyName(response.getCounterPartyName());
@@ -68,10 +68,10 @@ public class EntityMapper {
         return ibanNameCheckResponseEntities;
     }
 
-    public List<IbanNameCheckResponseEntity> mapToIbanNameCheckResponseEntity(UUID correlationId, IbanNameCheckResponse surePayResponse) {
-        List<IbanNameCheckResponseEntity> ibanNameCheckResponseEntities =  surePayResponse.getBatchResponse().stream()
+    public List<IbanNameResponseEntity> mapToIbanNameCheckResponseEntity(UUID correlationId, IbanNameCheckResponse surePayResponse) {
+        List<IbanNameResponseEntity> ibanNameCheckResponseEntities =  surePayResponse.getBatchResponse().stream()
                 .map(bulkResponse -> {
-                    IbanNameCheckResponseEntity entity = new IbanNameCheckResponseEntity();
+                    IbanNameResponseEntity entity = new IbanNameResponseEntity();
                     entity.setCorrelationId(correlationId);
                     entity.setCounterPartyAccount(bulkResponse.getResult().getAccountResult().getIban());
                     entity.setCounterPartyName(bulkResponse.getResult().getAccountHolderName());

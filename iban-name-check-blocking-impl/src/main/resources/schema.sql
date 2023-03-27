@@ -1,9 +1,9 @@
-DROP TABLE IF EXISTS iban_name_entity;
-DROP TABLE IF EXISTS iban_name_check_response_entity;
+DROP TABLE IF EXISTS iban_name_request_entity;
+DROP TABLE IF EXISTS iban_name_response_entity;
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE IF NOT EXISTS iban_name_entity (
+CREATE TABLE IF NOT EXISTS iban_name_request_entity (
     transaction_id UUID DEFAULT uuid_generate_v4 (),
     correlation_id UUID DEFAULT uuid_generate_v4 (),
     counter_party_name VARCHAR(255) NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS iban_name_entity (
     PRIMARY KEY (transaction_id)
 );
 
-CREATE TABLE IF NOT EXISTS iban_name_check_response_entity (
+CREATE TABLE IF NOT EXISTS iban_name_response_entity (
     correlation_id uuid DEFAULT uuid_generate_v4 (),
     counter_party_account VARCHAR(255) NOT NULL,
     counter_party_name VARCHAR(255) NOT NULL,

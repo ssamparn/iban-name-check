@@ -1,7 +1,7 @@
 package com.sparkle.demo.ibannamecheckasyncimpl.mapper;
 
 import com.opencsv.bean.CsvToBeanBuilder;
-import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameCheckResponseEntity;
+import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameResponseEntity;
 import com.sparkle.demo.ibannamecheckasyncimpl.database.entity.IbanNameEntity;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.FirstRequest;
 import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.IbanNameModel;
@@ -107,8 +107,8 @@ public class JsonObjectMapper {
         return accountNameCheckData;
     }
 
-    public List<AccountNameCheckData> toExcelWritableResource(Flux<IbanNameCheckResponseEntity> ibanNameCheckResponseEntityFlux) {
-        List<IbanNameCheckResponseEntity> ibanNameCheckResponseEntities = new ArrayList<>();
+    public List<AccountNameCheckData> toExcelWritableResource(Flux<IbanNameResponseEntity> ibanNameCheckResponseEntityFlux) {
+        List<IbanNameResponseEntity> ibanNameCheckResponseEntities = new ArrayList<>();
 
         ibanNameCheckResponseEntityFlux.collectList()
                 .subscribe(ibanNameCheckResponseEntities::addAll);

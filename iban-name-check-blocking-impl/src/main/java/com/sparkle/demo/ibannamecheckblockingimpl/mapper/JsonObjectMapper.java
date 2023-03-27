@@ -1,7 +1,7 @@
 package com.sparkle.demo.ibannamecheckblockingimpl.mapper;
 
 import com.opencsv.bean.CsvToBeanBuilder;
-import com.sparkle.demo.ibannamecheckblockingimpl.database.entity.IbanNameCheckResponseEntity;
+import com.sparkle.demo.ibannamecheckblockingimpl.database.entity.IbanNameResponseEntity;
 import com.sparkle.demo.ibannamecheckblockingimpl.database.entity.IbanNameEntity;
 import com.sparkle.demo.ibannamecheckblockingimpl.web.model.request.FirstRequest;
 import com.sparkle.demo.ibannamecheckblockingimpl.web.model.request.IbanNameModel;
@@ -105,8 +105,8 @@ public class JsonObjectMapper {
         return accountNameCheckData;
     }
 
-    public List<AccountNameCheckData> toExcelWritableResource(Mono<List<IbanNameCheckResponseEntity>> ibanNameCheckResponseEntityMonoList) {
-        List<IbanNameCheckResponseEntity> ibanNameCheckResponseEntities = new ArrayList<>();
+    public List<AccountNameCheckData> toExcelWritableResource(Mono<List<IbanNameResponseEntity>> ibanNameCheckResponseEntityMonoList) {
+        List<IbanNameResponseEntity> ibanNameCheckResponseEntities = new ArrayList<>();
 
         ibanNameCheckResponseEntities = ibanNameCheckResponseEntityMonoList.block();
 

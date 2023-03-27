@@ -1,7 +1,7 @@
 package com.sparkle.demo.ibannamecheckblockingimpl.web.controller;
 
 import com.sparkle.demo.ibannamecheckblockingimpl.business.IbanNameCheckBusinessImpl;
-import com.sparkle.demo.ibannamecheckblockingimpl.database.entity.IbanNameCheckResponseEntity;
+import com.sparkle.demo.ibannamecheckblockingimpl.database.entity.IbanNameResponseEntity;
 import com.sparkle.demo.ibannamecheckblockingimpl.web.model.request.IbanNameModel;
 import com.sparkle.demo.ibannamecheckblockingimpl.web.model.response.TaskResponse;
 import com.sparkle.demo.ibannamecheckblockingimpl.web.model.response.TaskStatusResponse;
@@ -75,7 +75,7 @@ public class IbanNameCheckRestController {
 
     // experimental feature
     @GetMapping(value = "/get-updated-status/{correlationId}")
-    public Mono<ResponseEntity<List<IbanNameCheckResponseEntity>>> getUpdatedStatus(@PathVariable("correlationId") String correlationId) {
+    public Mono<ResponseEntity<List<IbanNameResponseEntity>>> getUpdatedStatus(@PathVariable("correlationId") String correlationId) {
         return this.ibanNameCheckBusiness.downloadStatus(correlationId)
                 .collectList()
                 .map(list -> ResponseEntity.ok().headers(jsonResponseHeaders(correlationId)).body(list));

@@ -30,7 +30,7 @@ public class IbanNameCheckCsvClient {
 
     private final WebClient surePayClient;
 
-    @Value("classpath:csv/file.csv")
+    @Value("classpath:csv/sure-pay-input-file.csv")
     private Resource csvResource;
 
     @Autowired
