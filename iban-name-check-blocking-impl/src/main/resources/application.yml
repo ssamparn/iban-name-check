@@ -1,17 +1,41 @@
 server:
   port: 7072
 
+service.url:
+  sure-pay: http://localhost:7070/v2/account
+
+database:
+  name: iban_name_check
+  type: postgresql
+  host: localhost
+  port: 5432
+  username: sashank
+  password: password
+
 spring:
+  application:
+    name: iban-name-check
   servlet:
     multipart:
       enabled: false
-  jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect #  check the dialect
-    show-sql: true
-    hibernate:
-      ddl-auto: update
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/iban-name-check-database?useSSL=false&createDatabaseIfNotExist=true
-    username: root
-    password: mauFJcuf5dhRMQrjj
+    url: jdbc:${database.type}://${database.host}:${database.port}/${database.name}
+    username: ${database.username}
+    password: ${database.password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        generate_statistics: true
+
+client.ssl:
+  trustStore: truststore.jks
+  trustStorePassword: password
+  keyStore: keystore.jks
+  keyStorePassword: password
+  type: jks

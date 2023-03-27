@@ -36,7 +36,7 @@ public class IbanNameCheckAsyncController {
     private final IbanNameCheckBusinessImpl ibanNameCheckBusiness;
 
     @PostMapping(value = "/ancs-upload-pain", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<ResponseEntity<TaskResponse>> uploadPain(@RequestPart("fileToUpload") Mono<FilePart> filePartMono) {
+    public Mono<ResponseEntity<TaskResponse>> uploadPain(@RequestPart("file") Mono<FilePart> filePartMono) {
         log.info("requesting upload endpoint of ancs");
         return this.ibanNameCheckBusiness.uploadPainFile(filePartMono)
                 .map(response -> ResponseEntity.ok()
@@ -46,7 +46,7 @@ public class IbanNameCheckAsyncController {
     }
 
     @PostMapping(value = "/ancs-upload-excel", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<ResponseEntity<Resource>> uploadExcel(@RequestPart("fileToUpload") Mono<FilePart> filePartMono) {
+    public Mono<ResponseEntity<Resource>> uploadExcel(@RequestPart("file") Mono<FilePart> filePartMono) {
         final UUID correlationId = UUID.randomUUID();
         return this.ibanNameCheckBusiness.uploadExcelFile(filePartMono, correlationId)
                 .map(InputStreamResource::new)
@@ -63,7 +63,7 @@ public class IbanNameCheckAsyncController {
     }
 
     @PostMapping(value = "/ancs-download/{taskId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<ResponseEntity<Resource>> download(@RequestPart("fileToUpload") Mono<FilePart> filePartMono,
+    public Mono<ResponseEntity<Resource>> download(@RequestPart("file") Mono<FilePart> filePartMono,
                                                        @PathVariable("taskId") UUID taskId) {
         log.info("requesting download csv endpoint of ancs");
         return this.ibanNameCheckBusiness.downloadTask(filePartMono, taskId)

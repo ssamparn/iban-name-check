@@ -1,8 +1,8 @@
-package com.sparkle.demo.ibannamecheckasyncimpl.mapper;
+package com.sparkle.demo.ibannamecheckblockingimpl.mapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.sparkle.demo.ibannamecheckasyncimpl.web.model.request.IbanNameModel;
+import com.sparkle.demo.ibannamecheckblockingimpl.web.model.request.IbanNameModel;
 import com.sparkle.demo.ibannamecheckcommon.model.ct.request.Document;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.usermodel.XSSFRow;
