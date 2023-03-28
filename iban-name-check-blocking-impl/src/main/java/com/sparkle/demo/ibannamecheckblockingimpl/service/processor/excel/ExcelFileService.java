@@ -1,4 +1,4 @@
-package com.sparkle.demo.ibannamecheckblockingimpl.service.excel;
+package com.sparkle.demo.ibannamecheckblockingimpl.service.processor.excel;
 
 import com.sparkle.demo.ibannamecheckblockingimpl.client.IbanNameCheckCsvClient;
 import com.sparkle.demo.ibannamecheckblockingimpl.database.repository.IbanNameCheckResponseRepository;

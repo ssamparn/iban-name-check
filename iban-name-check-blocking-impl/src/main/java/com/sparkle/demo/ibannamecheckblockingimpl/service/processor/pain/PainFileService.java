@@ -1,4 +1,4 @@
-package com.sparkle.demo.ibannamecheckblockingimpl.service.pain;
+package com.sparkle.demo.ibannamecheckblockingimpl.service.processor.pain;
 
 import com.sparkle.demo.ibannamecheckblockingimpl.client.IbanNameCheckCsvClient;
 import com.sparkle.demo.ibannamecheckblockingimpl.client.IbanNameCheckJsonClient;
