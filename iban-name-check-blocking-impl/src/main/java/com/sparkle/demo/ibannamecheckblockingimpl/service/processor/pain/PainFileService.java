@@ -27,7 +27,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PainFileProcessor {
+public class PainFileService {
 
     private final FileMapper fileMapper;
     private final JsonObjectMapper jsonMapper;

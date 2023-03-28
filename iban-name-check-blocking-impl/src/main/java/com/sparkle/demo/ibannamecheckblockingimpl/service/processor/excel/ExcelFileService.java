@@ -24,7 +24,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ExcelFileProcessor {
+public class ExcelFileService {
 
     private final FileMapper fileMapper;
     private final JsonObjectMapper jsonMapper;
