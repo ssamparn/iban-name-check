@@ -8,6 +8,7 @@ import com.sparkle.demo.ibannamecheckblockingimpl.database.repository.IbanNameRe
 import com.sparkle.demo.ibannamecheckblockingimpl.mapper.EntityMapper;
 import com.sparkle.demo.ibannamecheckblockingimpl.mapper.FileMapper;
 import com.sparkle.demo.ibannamecheckblockingimpl.mapper.JsonObjectMapper;
+import com.sparkle.demo.ibannamecheckblockingimpl.service.operation.pain.PainFileService;
 import com.sparkle.demo.ibannamecheckblockingimpl.web.model.response.TaskResponse;
 import com.sparkle.demo.ibannamecheckblockingimpl.web.model.response.TaskStatusResponse;
 import com.sparkle.demo.ibannamecheckblockingimpl.web.service.CsvWriteService;
@@ -38,19 +39,15 @@ public class PainFileProcessor {
     private final EntityMapper entityMapper;
     private final IbanNameRepository ibanNameRepository;
     private final IbanNameCheckResponseRepository ibanNameCheckResponseRepository;
+    private final PainFileService painFileService;
 
-    public Mono<TaskResponse> processPainFile(Mono<FilePart> filePart, UUID requestId) {
+    public Mono<TaskResponse> processPainFile(final Mono<FilePart> filePart, final UUID requestId) {
         return filePart
                 .map(fileMapper::getFilePartRequestAsInputStream)
                 .map(inputStream -> (PipedInputStream) inputStream)
                 .flatMap(fileMapper::readContentFromPipedInputStream)
-                .flatMap(fileMapper::mapToRootDocument)
-                .map(document -> entityMapper.mapToIbanNameEntity(requestId, document))
-                .map(entities -> Mono.fromCallable(() -> this.ibanNameRepository.saveAll(entities)))
-                .subscribeOn(Schedulers.boundedElastic())
-                .flatMap(jsonMapper::toTaskIdRequest)
-                .flatMap(csvWriteService::createFirstCsvRequest)
-                .flatMap(csvStream -> ibanNameCheckCsvClient.uploadCsvFile(csvStream, requestId));
+                .map(fileMapper::mapToRootDocument)
+                .flatMap(document -> this.painFileService.persistPainFile(document, requestId));
     }
 
     public Flux<TaskStatusResponse> checkTaskStatus(UUID taskId) {
