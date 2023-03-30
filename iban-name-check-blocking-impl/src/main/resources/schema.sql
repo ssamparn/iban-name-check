@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS iban_name_request_entity;
 DROP TABLE IF EXISTS iban_name_response_entity;
+DROP TABLE IF EXISTS shedlock;
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
@@ -23,4 +24,12 @@ CREATE TABLE IF NOT EXISTS iban_name_response_entity (
     switched_to_iban VARCHAR(255) NOT NULL,
     message VARCHAR(255) NOT NULL,
     PRIMARY KEY (counter_party_account)
+);
+
+CREATE TABLE IF NOT EXISTS shedlock (
+    name VARCHAR(64) NOT NULL,
+    lock_until TIMESTAMP NOT NULL,
+    locked_at TIMESTAMP NOT NULL,
+    locked_by VARCHAR(255) NOT NULL,
+    PRIMARY KEY (name)
 );
