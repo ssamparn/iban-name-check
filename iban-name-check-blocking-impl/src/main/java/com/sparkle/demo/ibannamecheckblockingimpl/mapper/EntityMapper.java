@@ -1,7 +1,9 @@
 package com.sparkle.demo.ibannamecheckblockingimpl.mapper;
 
 import com.sparkle.demo.ibannamecheckblockingimpl.database.entity.IbanNameResponseEntity;
-import com.sparkle.demo.ibannamecheckblockingimpl.database.entity.IbanNameEntity;
+import com.sparkle.demo.ibannamecheckblockingimpl.database.entity.IbanNameRequestEntity;
+import com.sparkle.demo.ibannamecheckblockingimpl.database.relationship.FileRequestContentEntity;
+import com.sparkle.demo.ibannamecheckblockingimpl.database.relationship.FileRequestEntity;
 import com.sparkle.demo.ibannamecheckblockingimpl.web.model.request.IbanNameModel;
 import com.sparkle.demo.ibannamecheckblockingimpl.web.model.response.AccountNameCheckData;
 import com.sparkle.demo.ibannamecheckblockingimpl.web.model.response.FinalStatus;
@@ -21,12 +23,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EntityMapper {
 
-    public List<IbanNameEntity> mapToIbanNameEntity(UUID correlationId, Document rootDocument) {
-        List<IbanNameEntity> ibanNameEntityList = rootDocument.getCustomerCreditTransferInitiation().getPaymentInformation()
+    public List<IbanNameRequestEntity> mapToIbanNameEntity(UUID correlationId, Document rootDocument) {
+        List<IbanNameRequestEntity> ibanNameRequestEntityList = rootDocument.getCustomerCreditTransferInitiation().getPaymentInformation()
                 .stream()
                 .map(PaymentInformation::getCreditTransferTransactionInformation)
                 .map(creditTransferTransactionInformation -> {
-                    IbanNameEntity entity = new IbanNameEntity();
+                    IbanNameRequestEntity entity = new IbanNameRequestEntity();
                     entity.setCorrelationId(correlationId);
                     entity.setCounterPartyName(creditTransferTransactionInformation.getCreditor().getName());
                     entity.setCounterPartyAccount(creditTransferTransactionInformation.getCreditorAccount().getCreditorAccountId().getIban());
@@ -34,14 +36,14 @@ public class EntityMapper {
                     return entity;
                 }).collect(Collectors.toList());
 
-        log.info("mapped iban name entity from pain file list size: {}", ibanNameEntityList.size());
-        return ibanNameEntityList;
+        log.info("mapped iban name entity from pain file list size: {}", ibanNameRequestEntityList.size());
+        return ibanNameRequestEntityList;
     }
 
-    public List<IbanNameEntity> mapToIbanNameEntity(UUID correlationId, List<IbanNameModel> ibanNameModels) {
-        List<IbanNameEntity> ibanNameEntityList = ibanNameModels.stream()
+    public List<IbanNameRequestEntity> mapToIbanNameEntity(UUID correlationId, List<IbanNameModel> ibanNameModels) {
+        List<IbanNameRequestEntity> ibanNameRequestEntityList = ibanNameModels.stream()
                 .map(model -> {
-                    IbanNameEntity entity = new IbanNameEntity();
+                    IbanNameRequestEntity entity = new IbanNameRequestEntity();
                     entity.setCorrelationId(correlationId);
                     entity.setCounterPartyName(model.getCounterPartyName());
                     entity.setCounterPartyAccount(model.getCounterPartyAccount());
@@ -49,8 +51,32 @@ public class EntityMapper {
                     return entity;
                 }).collect(Collectors.toList());
 
-        log.info("mapped iban name entity from excel file list size: {}", ibanNameEntityList.size());
-        return ibanNameEntityList;
+        log.info("mapped iban name entity from excel file list size: {}", ibanNameRequestEntityList.size());
+        return ibanNameRequestEntityList;
+    }
+
+    public FileRequestEntity mapToFileRequestEntity(UUID requestId, List<IbanNameModel> ibanNameModels) {
+        FileRequestEntity fileRequestEntity = new FileRequestEntity();
+
+        fileRequestEntity.setRequestId(requestId.toString());
+        List<FileRequestContentEntity> fileRequestContentEntities = createFileRequestsContentEntity(ibanNameModels);
+        fileRequestEntity.setFileRequestContents(fileRequestContentEntities);
+
+        return fileRequestEntity;
+    }
+
+    private List<FileRequestContentEntity> createFileRequestsContentEntity(List<IbanNameModel> ibanNameModels) {
+        List<FileRequestContentEntity> fileRequestContentEntityList = ibanNameModels.stream()
+                .map(model -> {
+                    FileRequestContentEntity entity = new FileRequestContentEntity();
+                    entity.setCounterPartyName(model.getCounterPartyName());
+                    entity.setCounterPartyAccount(model.getCounterPartyAccount());
+                    entity.setTransactionId(UUID.randomUUID().toString());
+                    return entity;
+                }).collect(Collectors.toList());
+
+        log.info("mapped fileRequestContent entity from excel file list size: {}", fileRequestContentEntityList.size());
+        return fileRequestContentEntityList;
     }
 
     public List<IbanNameResponseEntity> mapToIbanNameCheckResponseEntity(UUID correlationId, List<AccountNameCheckData> surePayResponse) {

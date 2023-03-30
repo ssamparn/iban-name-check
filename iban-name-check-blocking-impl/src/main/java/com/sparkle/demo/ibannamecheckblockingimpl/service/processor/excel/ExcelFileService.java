@@ -1,12 +1,14 @@
 package com.sparkle.demo.ibannamecheckblockingimpl.service.processor.excel;
 
 import com.sparkle.demo.ibannamecheckblockingimpl.client.IbanNameCheckCsvClient;
+import com.sparkle.demo.ibannamecheckblockingimpl.database.repository.FileRequestRepository;
 import com.sparkle.demo.ibannamecheckblockingimpl.database.repository.IbanNameCheckResponseRepository;
 import com.sparkle.demo.ibannamecheckblockingimpl.database.repository.IbanNameRepository;
 import com.sparkle.demo.ibannamecheckblockingimpl.mapper.EntityMapper;
 import com.sparkle.demo.ibannamecheckblockingimpl.mapper.FileMapper;
 import com.sparkle.demo.ibannamecheckblockingimpl.mapper.JsonObjectMapper;
 import com.sparkle.demo.ibannamecheckblockingimpl.web.model.request.IbanNameModel;
+import com.sparkle.demo.ibannamecheckblockingimpl.web.model.response.TaskResponse;
 import com.sparkle.demo.ibannamecheckblockingimpl.web.service.CsvWriteService;
 import com.sparkle.demo.ibannamecheckblockingimpl.web.service.ExcelWriteService;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +31,9 @@ public class ExcelFileService {
     private final FileMapper fileMapper;
     private final JsonObjectMapper jsonMapper;
     private final EntityMapper entityMapper;
-    private final IbanNameCheckCsvClient ibanNameCheckClient;
+    private final IbanNameCheckCsvClient ibanNameCheckCsvClient;
     private final IbanNameRepository ibanNameRepository;
+    private final FileRequestRepository fileRequestRepository;
     private final IbanNameCheckResponseRepository ibanNameCheckResponseRepository;
     private final CsvWriteService csvWriteService;
     private final ExcelWriteService excelWriteService;
@@ -43,7 +46,7 @@ public class ExcelFileService {
             .map(entities -> Mono.fromCallable(() -> this.ibanNameRepository.saveAll(entities)))
             .flatMap(jsonMapper::mapToIbanNameModel)
             .flatMap(csvWriteService::createCsvRequest)
-            .map(requestStream -> ibanNameCheckClient.downloadCsvFile(requestId, requestStream))
+            .map(requestStream -> ibanNameCheckCsvClient.downloadCsvFile(requestId, requestStream))
             .map(fileMapper::getDataBufferAsInputStream)
             .map(jsonMapper::toCsvDownloadableResource)
             .map(response -> entityMapper.mapToIbanNameCheckResponseEntity(requestId, response))
@@ -51,6 +54,29 @@ public class ExcelFileService {
             .map(jsonMapper::toExcelWritableResource)
             .flatMap(excelWriteService::writeToExcel)
             .subscribeOn(Schedulers.boundedElastic());
+    }
+
+    public Mono<TaskResponse> processExcelFileRelationship(Mono<FilePart> filePartMono, UUID requestId) {
+        return filePartMono
+                .map(fileMapper::getFilePartRequestAsInputStream)
+                .map(fileMapper::excelToIbanNameModel)
+                .map(ibanNameModel -> entityMapper.mapToFileRequestEntity(requestId, ibanNameModel))
+                .map(this.fileRequestRepository::save)
+                .map(jsonMapper::mapToRelationalIbanNameModel)
+                .flatMap(csvWriteService::createCsvRequest)
+                .flatMap(csvStream -> ibanNameCheckCsvClient.uploadCsvFile(requestId, csvStream));
+    }
+
+    public Mono<TaskResponse> updateTaskId(TaskResponse taskResponse) {
+        return Mono.fromCallable(() -> this.fileRequestRepository.findByRequestId(taskResponse.getRequestId().toString()))
+            .publishOn(Schedulers.boundedElastic())
+                .map(entity -> {
+                    entity.setRequestId(taskResponse.getRequestId().toString());
+                    entity.setTaskId(taskResponse.getTaskId().toString());
+                    return entity;
+                })
+            .map(fileRequestRepository::save)
+            .thenReturn(taskResponse);
     }
 
     // experimental feature

@@ -16,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 @Table(name = "iban_name_request_entity")
-public class IbanNameEntity {
+public class IbanNameRequestEntity {
 
     @Id
     private UUID transactionId;
