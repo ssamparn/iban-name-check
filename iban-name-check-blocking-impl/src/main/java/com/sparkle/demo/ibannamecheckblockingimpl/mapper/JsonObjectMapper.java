@@ -2,7 +2,9 @@ package com.sparkle.demo.ibannamecheckblockingimpl.mapper;
 
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.sparkle.demo.ibannamecheckblockingimpl.database.entity.IbanNameResponseEntity;
-import com.sparkle.demo.ibannamecheckblockingimpl.database.entity.IbanNameEntity;
+import com.sparkle.demo.ibannamecheckblockingimpl.database.entity.IbanNameRequestEntity;
+import com.sparkle.demo.ibannamecheckblockingimpl.database.relationship.FileRequestContentEntity;
+import com.sparkle.demo.ibannamecheckblockingimpl.database.relationship.FileRequestEntity;
 import com.sparkle.demo.ibannamecheckblockingimpl.web.model.request.FirstRequest;
 import com.sparkle.demo.ibannamecheckblockingimpl.web.model.request.IbanNameModel;
 import com.sparkle.demo.ibannamecheckblockingimpl.web.model.request.TaskIdRequest;
@@ -21,17 +23,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class JsonObjectMapper {
 
-    public Mono<TaskIdRequest> toTaskIdRequest(Mono<List<IbanNameEntity>> listMono) {
+    public Mono<TaskIdRequest> toTaskIdRequest(Mono<List<IbanNameRequestEntity>> listMono) {
         return listMono.map(this::mapToTaskIdRequest);
     }
 
-    private TaskIdRequest mapToTaskIdRequest(List<IbanNameEntity> ibanNameEntities) {
+    private TaskIdRequest mapToTaskIdRequest(List<IbanNameRequestEntity> ibanNameEntities) {
         TaskIdRequest taskIdRequest = new TaskIdRequest();
         List<FirstRequest> batchRequest = this.mapToFirstRequest(ibanNameEntities);
         taskIdRequest.setFirstRequestList(batchRequest);
@@ -39,7 +42,7 @@ public class JsonObjectMapper {
         return taskIdRequest;
     }
 
-    private List<FirstRequest> mapToFirstRequest(List<IbanNameEntity> ibanNameEntities) {
+    private List<FirstRequest> mapToFirstRequest(List<IbanNameRequestEntity> ibanNameEntities) {
         return ibanNameEntities
                 .stream()
                 .map(entity -> {
@@ -52,11 +55,11 @@ public class JsonObjectMapper {
                 }).collect(Collectors.toList());
     }
 
-    public Mono<List<IbanNameModel>> mapToIbanNameModel(Mono<List<IbanNameEntity>> listMono) {
+    public Mono<List<IbanNameModel>> mapToIbanNameModel(Mono<List<IbanNameRequestEntity>> listMono) {
         return listMono.map(this::mapToIbanNameModelList);
     }
 
-    private List<IbanNameModel> mapToIbanNameModelList(List<IbanNameEntity> ibanNameEntities) {
+    private List<IbanNameModel> mapToIbanNameModelList(List<IbanNameRequestEntity> ibanNameEntities) {
         return ibanNameEntities.stream()
                 .map(entity -> {
                     IbanNameModel model = new IbanNameModel();
@@ -67,12 +70,23 @@ public class JsonObjectMapper {
                 }).collect(Collectors.toList());
     }
 
-    public Mono<IbanNameCheckRequest> toSurePayJsonRequest(Flux<IbanNameEntity> ibanNameCheckEntityFlux) {
+    public List<IbanNameModel> mapToRelationalIbanNameModel(FileRequestEntity entityMono) {
+        return entityMono.getFileRequestContents().stream()
+                .map(entity -> {
+                    IbanNameModel model = new IbanNameModel();
+                    model.setTransactionId(UUID.fromString(entity.getTransactionId()));
+                    model.setCounterPartyAccount(entity.getCounterPartyAccount());
+                    model.setCounterPartyName(entity.getCounterPartyName());
+                    return model;
+                }).collect(Collectors.toList());
+    }
+
+    public Mono<IbanNameCheckRequest> toSurePayJsonRequest(Flux<IbanNameRequestEntity> ibanNameCheckEntityFlux) {
         return ibanNameCheckEntityFlux.collectList()
                 .map(this::mapToSurePayRequest);
     }
 
-    private IbanNameCheckRequest mapToSurePayRequest(List<IbanNameEntity> ibanNameEntities) {
+    private IbanNameCheckRequest mapToSurePayRequest(List<IbanNameRequestEntity> ibanNameEntities) {
         IbanNameCheckRequest ibanNameCheckRequest = new IbanNameCheckRequest();
         List<BulkRequest> batchRequest = this.mapToBulkRequest(ibanNameEntities);
 
@@ -82,7 +96,7 @@ public class JsonObjectMapper {
         return ibanNameCheckRequest;
     }
 
-    private List<BulkRequest> mapToBulkRequest(List<IbanNameEntity> ibanNameEntities) {
+    private List<BulkRequest> mapToBulkRequest(List<IbanNameRequestEntity> ibanNameEntities) {
         return ibanNameEntities
                 .stream()
                 .map(entity -> {

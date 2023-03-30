@@ -32,6 +32,14 @@ public class IbanNameCheckBusinessImpl {
         return this.excelFileService.processExcelFile(filePartMono, requestId);
     }
 
+    public Mono<TaskResponse> uploadExcelFileRelationship(final Mono<FilePart> filePartMono, final UUID requestId) {
+        return this.excelFileService.processExcelFileRelationship(filePartMono, requestId);
+    }
+
+    public Mono<TaskResponse> updateTaskId(TaskResponse taskResponse) {
+        return this.excelFileService.updateTaskId(taskResponse);
+    }
+
     public Flux<TaskStatusResponse> checkUploadStatus(final UUID taskId) {
         return this.painFileService.checkTaskStatus(taskId);
     }
@@ -48,4 +56,6 @@ public class IbanNameCheckBusinessImpl {
     public Flux<IbanNameResponseEntity> downloadStatus(final String correlationId) {
         return this.painFileService.downloadUpdatedStatus(correlationId);
     }
+
+
 }

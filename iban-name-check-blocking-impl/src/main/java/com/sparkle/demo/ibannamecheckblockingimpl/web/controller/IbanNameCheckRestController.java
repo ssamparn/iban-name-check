@@ -56,6 +56,17 @@ public class IbanNameCheckRestController {
                 );
     }
 
+    @PostMapping(value = "/ancs-upload-excel-relationship", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Mono<ResponseEntity<TaskResponse>> uploadExcelRelationships(@RequestPart("file") Mono<FilePart> filePartMono) {
+        final UUID requestId = UUID.randomUUID();
+        return this.ibanNameCheckBusiness.uploadExcelFileRelationship(filePartMono, requestId)
+                .flatMap(ibanNameCheckBusiness::updateTaskId)
+                .map(response -> ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(response)
+                );
+    }
+
     @GetMapping(value = "/ancs-upload/{taskId}/status", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<TaskStatusResponse> checkTaskStatus(@PathVariable("taskId") UUID taskId) {
         log.info("requesting task status check endpoint of ancs");
